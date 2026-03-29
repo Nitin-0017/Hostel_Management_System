@@ -10,7 +10,6 @@
 Managing hostel operations manually is time-consuming and error-prone. Wardens often struggle with:
 
 - Room allocation  
-- Fee tracking  
 - Complaint handling  
 - Maintaining student records  
 
@@ -21,7 +20,6 @@ Existing small hostels lack an integrated digital platform to efficiently manage
 To design and implement a scalable, modular Hostel Management System that automates:
 
 - Room allocation  
-- Fee management  
 - Complaint tracking  
 - Student record maintenance  
 
@@ -41,8 +39,7 @@ HostelHub will be a web-based application providing a centralized platform for h
 ### Key Modules
 
 - Student Registration & Profile Management  
-- Room Allocation Management  
-- Fee Management & Payment Tracking  
+- Room Allocation Management   
 - Complaint/Leave Management  
 - Admin Dashboard & Reports  
 
