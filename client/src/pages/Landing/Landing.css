@@ -1,81 +1,183 @@
+/* FULL PAGE WITH DARK OVERLAY */
 .landing {
   height: 100vh;
+  background: 
+    linear-gradient(rgba(0,0,0,0.50), rgba(0,0,0,0.6)),
+    url("https://i.pinimg.com/1200x/fa/64/86/fa648630b598189c574b5a61359da099.jpg")
+    no-repeat center/cover;
+
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  font-family: Arial, sans-serif;
-}
-
-.landing-card {
-  background: white;
-  padding: 30px;
-  border-radius: 16px;
-  width: 350px;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+  color: white;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
+/* 🔥 TITLE */
 .title {
-  margin-bottom: 10px;
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+
+  text-shadow: 0 4px 20px rgba(0,0,0,0.9);
+  animation: fadeSlide 1s ease;
 }
 
-.subtitle {
-  color: gray;
-  margin-bottom: 20px;
+/* 🔥 TEXT */
+.animated-text {
+  font-size: 20px;
+  color: #f1f1f1;
+  margin-bottom: 8rem;
+
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+  animation: fadeText 1s ease;
 }
 
-.status {
-  margin-bottom: 15px;
-}
-
-.badge {
-  margin-left: 10px;
-  padding: 5px 10px;
-  border-radius: 10px;
-  font-size: 12px;
-}
-
-.neutral {
-  background: #ddd;
-}
-
-.success {
-  background: #4caf50;
-  color: white;
-}
-
-.error {
-  background: #f44336;
-  color: white;
-}
-
-.details {
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-
-.buttons {
+/* 🔥 CARDS */
+.card-container {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
+  gap: 8rem;
+  margin-bottom: 10rem;
 }
 
-button {
-  padding: 8px 15px;
-  border: none;
-  border-radius: 8px;
+/* 🔥 ROLE CARD */
+.role-card {
+  width: 240px;
+  height: 300px;
+  border-radius: 18px;
+  overflow: hidden;
   cursor: pointer;
-  background: #667eea;
-  color: white;
+  position: relative;
+
+  /* 🔥 ADD THIS */
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-button.secondary {
-  background: #ccc;
-  color: black;
+.role-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
 }
 
-button.refresh {
-  margin-top: 10px;
-  background: #333;
+/* 🔥 BACKGROUNDS */
+.role-card.admin {
+  background: url("https://images.unsplash.com/photo-1551836022-d5d88e9218df")
+    no-repeat center/cover;
+}
+
+.role-card.student {
+  background: url("https://i.pinimg.com/1200x/d8/a9/7d/d8a97dcdf2b252f18b51c844aed7b413.jpg")
+    no-repeat center/cover;
+}
+
+/* 🔥 OVERLAY */
+.card-overlay {
+  background: rgba(0, 0, 0, 0.50);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-overlay h2 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* 🔥 FOOTER (FIXED VISIBILITY) */
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 12px;
+  font-size: 13px;
+  color: #ddd;
+}
+
+/* 🔥 ANIMATIONS */
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeText {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 🔥 RESPONSIVE ONLY — NO DESIGN CHANGE */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .title {
+    font-size: 48px;
+  }
+
+  .animated-text {
+    font-size: 18px;
+  }
+
+  .role-card {
+    width: 200px;
+    height: 260px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .title {
+    font-size: 36px;
+  }
+
+  .animated-text {
+    font-size: 16px;
+    padding: 0 1rem; /* overflow fix only */
+  }
+
+  .card-container {
+    flex-direction: column; /* stack cards */
+    align-items: center;
+  }
+
+  .role-card {
+    width: 260px;
+    height: 220px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .title {
+    font-size: 30px;
+  }
+
+  .animated-text {
+    font-size: 14px;
+  }
+
+  .role-card {
+    width: 220px;
+    height: 180px;
+  }
+
+  .footer {
+    font-size: 11px;
+  }
 }

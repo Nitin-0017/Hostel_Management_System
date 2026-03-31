@@ -1,76 +1,63 @@
 import { useEffect, useState } from "react";
 import "./Landing.css";
 
-type SystemStatus = {
-  success: boolean;
-  message: string;
-  uptime: number;
-  timestamp: string;
-};
+const texts = [
+  "Manage rooms, services, and student life effortlessly ",
+  "A modern hostel experience powered by technology",
+  "Smart living starts with HostelHub"
+];
 
 const Landing = () => {
-  const [status, setStatus] = useState<SystemStatus | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const fetchStatus = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/health");
-      const data = await res.json();
-      setStatus(data);
-    } catch (err) {
-      console.error(err);
-      setStatus(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [textIndex, setTextIndex] = useState(0);
 
   useEffect(() => {
-    fetchStatus();
+    const interval = setInterval(() => {
+      setTextIndex((prev) => (prev + 1) % texts.length);
+    }, 2500);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="landing">
-      <div className="landing-card">
-        <h1 className="title">HostelHub</h1>
-        <p className="subtitle">Smart Hostel Management System</p>
 
-        <div className="status">
-          <span>Status:</span>
-          {loading ? (
-            <span className="badge neutral">Checking...</span>
-          ) : status?.success ? (
-            <span className="badge success">Running</span>
-          ) : (
-            <span className="badge error">Down</span>
-          )}
-        </div>
+      {/* 🔥 TITLE */}
+      <h1 className="title">HostelHub</h1>
 
-        {status && (
-          <div className="details">
-            <p><strong>Message:</strong> {status.message}</p>
-            <p><strong>Uptime:</strong> {Math.floor(status.uptime)}s</p>
+      {/* 🔥 ANIMATED TEXT */}
+      <p key={textIndex} className="animated-text">
+        {texts[textIndex]}
+      </p>
+
+      {/* 🔥 CARDS */}
+      <div className="card-container">
+
+        <div
+          className="role-card admin"
+          onClick={() => (window.location.href = "/login/admin")}
+        >
+          <div className="card-overlay">
+            <h2>Admin Portal</h2>
           </div>
-        )}
-
-        <div className="buttons">
-          <button onClick={() => (window.location.href = "/login")}>
-            Login
-          </button>
-
-          <button
-            className="secondary"
-            onClick={() => (window.location.href = "/signup")}
-          >
-            Signup
-          </button>
         </div>
 
-        <button className="refresh" onClick={fetchStatus}>
-          Refresh Status
-        </button>
+        <div
+          className="role-card student"
+          onClick={() => (window.location.href = "/login/student")}
+        >
+          <div className="card-overlay">
+            <h2>Student Portal</h2>
+          </div>
+        </div>
+
       </div>
+
+      {/* 🔥 FOOTER */}
+      <footer className="footer">
+        <p>© 2026 HostelHub</p>
+        <p>Smart Hostel Management System</p>
+        <p>Contact: support@hostelhub.com</p>
+      </footer>
     </div>
   );
 };

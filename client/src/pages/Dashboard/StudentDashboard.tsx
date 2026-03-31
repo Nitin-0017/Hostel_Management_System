@@ -1,6 +1,6 @@
-import "./Dashboard.css";
+import "./StudentDashboard.css";
 
-const Dashboard = () => {
+const StudentDashboard = () => {
   return (
     <div className="dashboard">
       {/* Sidebar */}
@@ -52,4 +52,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default StudentDashboard;
