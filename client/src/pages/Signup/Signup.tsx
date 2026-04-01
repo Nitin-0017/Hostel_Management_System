@@ -21,54 +21,65 @@ const Signup = () => {
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 🔐 later: connect backend
     console.log("Signup Data:", form);
 
-    // after signup → go to login
     navigate("/login");
   };
 
   return (
     <div className="signup">
-      <div className="signup-card">
-        <h2>Create Account</h2>
 
-        <form onSubmit={handleSignup}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Enter name"
-            value={form.name}
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
-
-          <button type="submit">Signup</button>
-        </form>
-
-        <p className="login-link">
-          Already have an account?{" "}
-          <span onClick={() => navigate("/login")}>Login</span>
-        </p>
+      {/* 🔥 LEFT SIDE */}
+      <div className="signup-left">
+        <div className="left-overlay">
+          <h1>HostelHub</h1>
+          <p>Create your smart hostel account 🚀</p>
+        </div>
       </div>
+
+      {/* 🔥 RIGHT SIDE */}
+      <div className="signup-right">
+        <div className="signup-card">
+          <h2>Create Account</h2>
+
+          <form onSubmit={handleSignup}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter name"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+
+            <button type="submit">Signup</button>
+          </form>
+
+          <p className="login-link">
+            Already have an account?{" "}
+            <span onClick={() => navigate("/login")}>Login</span>
+          </p>
+        </div>
+      </div>
+
     </div>
   );
 };

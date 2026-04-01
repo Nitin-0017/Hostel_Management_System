@@ -1,55 +1,125 @@
+/* 🔥 FULL PAGE SPLIT */
 .signup {
   height: 100vh;
   display: flex;
+  font-family: "Poppins", sans-serif;
+}
+
+/* 🔥 LEFT SIDE */
+.signup-left {
+  flex: 1;
+  background: url("https://i.pinimg.com/1200x/fa/64/86/fa648630b598189c574b5a61359da099.jpg")
+    no-repeat center/cover;
+  position: relative;
+}
+
+/* 🔥 LEFT OVERLAY */
+.left-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-  font-family: Arial, sans-serif;
+
+  color: white;
+  text-align: center;
 }
 
+.left-overlay h1 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.left-overlay p {
+  font-size: 16px;
+  color: #ddd;
+}
+
+/* 🔥 RIGHT SIDE */
+.signup-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(135deg, #2F4156, #9cb6c3);
+}
+
+/* 🔥 CARD */
 .signup-card {
-  background: white;
-  padding: 30px;
-  border-radius: 16px;
+  background: #F5EFEB;
+  padding: 35px;
+  border-radius: 18px;
   width: 320px;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
+/* 🔥 TITLE */
 .signup-card h2 {
   margin-bottom: 20px;
+  color: #2F4156;
 }
 
+/* 🔥 INPUTS */
 .signup-card input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+
+  border-radius: 10px;
+  border: 1px solid #C8D9E6;
+
+  outline: none;
 }
 
+/* 🔥 BUTTON */
 .signup-card button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
+
   border: none;
-  border-radius: 8px;
-  background: #ff7a7a;
+  border-radius: 10px;
+
+  background: #567C8D;
   color: white;
-  font-weight: bold;
+  font-weight: 600;
+
   cursor: pointer;
 }
 
 .signup-card button:hover {
-  background: #e35d5d;
+  background: #2F4156;
 }
 
+/* 🔥 LINK */
 .login-link {
   margin-top: 15px;
   font-size: 14px;
+  color: #2F4156;
 }
 
 .login-link span {
-  color: #ff7a7a;
+  color: #567C8D;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
+}
+
+/* 🔥 RESPONSIVE */
+@media (max-width: 768px) {
+  .signup {
+    flex-direction: column;
+  }
+
+  .signup-left {
+    height: 35vh;
+  }
+
+  .signup-right {
+    height: 65vh;
+  }
 }
