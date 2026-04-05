@@ -1,0 +1,368 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  STAFF
+  ADMIN
+}
+
+enum RoomType {
+  SINGLE
+  DOUBLE
+  TRIPLE
+  DORMITORY
+}
+
+enum RoomStatus {
+  AVAILABLE
+  OCCUPIED
+  MAINTENANCE
+  RESERVED
+}
+
+enum AllocationStatus {
+  ACTIVE
+  VACATED
+  TRANSFERRED
+}
+
+enum FeeStatus {
+  PENDING
+  PAID
+  OVERDUE
+  WAIVED
+}
+
+enum PaymentMethod {
+  ONLINE
+  CASH
+  BANK_TRANSFER
+  UPI
+}
+
+enum ComplaintStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  REJECTED
+}
+
+enum ComplaintCategory {
+  MAINTENANCE
+  CLEANLINESS
+  FOOD
+  SECURITY
+  NOISE
+  OTHER
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum CleaningStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum NotificationType {
+  FEE_REMINDER
+  ROOM_ALLOCATION
+  LEAVE_UPDATE
+  COMPLAINT_UPDATE
+  GENERAL
+  CLEANING_ASSIGNED
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  phone         String?
+  role          Role
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  student       Student?
+  staff         Staff?
+  admin         Admin?
+  notifications Notification[]
+  sentNotifications Notification[] @relation("SentBy")
+
+  @@index([email])
+  @@map("users")
+}
+
+
+model Student {
+  id               String    @id @default(uuid())
+  userId           String    @unique
+  enrollmentNumber String    @unique
+  course           String
+  year             Int
+  parentName       String?
+  parentPhone      String?
+  address          String?
+  joiningDate      DateTime  @default(now())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  allocations      RoomAllocation[]
+  feeRecords       FeeRecord[]
+  complaints       Complaint[]
+  leaveRequests    LeaveRequest[]
+  cleaningRequests CleaningRequest[]
+
+  @@index([enrollmentNumber])
+  @@map("students")
+}
+
+
+model Staff {
+  id           String    @id @default(uuid())
+  userId       String    @unique
+  employeeId   String    @unique
+  designation  String
+  department   String?
+  joiningDate  DateTime  @default(now())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignedRooms      StaffRoomAssignment[]
+  cleaningTasks      CleaningRequest[]     @relation("AssignedStaff")
+  cleaningStatusLogs CleaningStatusLog[]
+
+  @@index([employeeId])
+  @@map("staff")
+}
+
+
+model Admin {
+  id         String    @id @default(uuid())
+  userId     String    @unique
+  adminLevel Int       @default(1)  // 1 = Warden, 2 = Super Admin
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resolvedComplaints Complaint[]   @relation("ResolvedBy")
+  approvedLeaves     LeaveRequest[] @relation("ApprovedBy")
+  generatedReports   Report[]
+
+  @@map("admins")
+}
+
+model Room {
+  id          String     @id @default(uuid())
+  roomNumber  String     @unique
+  floor       Int
+  building    String?
+  type        RoomType
+  capacity    Int
+  occupied    Int        @default(0)
+  status      RoomStatus @default(AVAILABLE)
+  amenities   String?    // JSON string of amenities list
+  monthlyFee  Decimal    @db.Decimal(10, 2)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  allocations       RoomAllocation[]
+  staffAssignments  StaffRoomAssignment[]
+  cleaningRequests  CleaningRequest[]
+
+  @@index([roomNumber])
+  @@index([status])
+  @@map("rooms")
+}
+
+model RoomAllocation {
+  id          String           @id @default(uuid())
+  studentId   String
+  roomId      String
+  status      AllocationStatus @default(ACTIVE)
+  allocatedAt DateTime         @default(now())
+  vacatedAt   DateTime?
+  remarks     String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  student     Student  @relation(fields: [studentId], references: [id])
+  room        Room     @relation(fields: [roomId], references: [id])
+
+  @@index([studentId])
+  @@index([roomId])
+  @@map("room_allocations")
+}
+
+model FeeRecord {
+  id            String        @id @default(uuid())
+  studentId     String
+  amount        Decimal       @db.Decimal(10, 2)
+  month         Int           // 1-12
+  year          Int
+  dueDate       DateTime
+  paidAt        DateTime?
+  status        FeeStatus     @default(PENDING)
+  paymentMethod PaymentMethod?
+  transactionId String?
+  remarks       String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  student       Student       @relation(fields: [studentId], references: [id])
+
+  @@index([studentId])
+  @@index([status])
+  @@map("fee_records")
+}
+
+model Complaint {
+  id           String            @id @default(uuid())
+  studentId    String
+  resolvedById String?
+  category     ComplaintCategory
+  subject      String
+  description  String            @db.Text
+  status       ComplaintStatus   @default(OPEN)
+  resolvedAt   DateTime?
+  resolutionNote String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  student      Student  @relation(fields: [studentId], references: [id])
+  resolvedBy   Admin?   @relation("ResolvedBy", fields: [resolvedById], references: [id])
+
+  @@index([studentId])
+  @@index([status])
+  @@map("complaints")
+}
+
+model LeaveRequest {
+  id           String      @id @default(uuid())
+  studentId    String
+  approvedById String?
+  fromDate     DateTime
+  toDate       DateTime
+  reason       String      @db.Text
+  status       LeaveStatus @default(PENDING)
+  reviewedAt   DateTime?
+  adminRemarks String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  student      Student  @relation(fields: [studentId], references: [id])
+  approvedBy   Admin?   @relation("ApprovedBy", fields: [approvedById], references: [id])
+
+  @@index([studentId])
+  @@index([status])
+  @@map("leave_requests")
+}
+
+model CleaningRequest {
+  id               String         @id @default(uuid())
+  studentId        String
+  roomId           String
+  assignedStaffId  String?
+  status           CleaningStatus @default(PENDING)
+  requestedAt      DateTime       @default(now())
+  scheduledAt      DateTime?
+  completedAt      DateTime?
+  notes            String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  student          Student        @relation(fields: [studentId], references: [id])
+  room             Room           @relation(fields: [roomId], references: [id])
+  assignedStaff    Staff?         @relation("AssignedStaff", fields: [assignedStaffId], references: [id])
+  statusLogs       CleaningStatusLog[]
+
+  @@index([studentId])
+  @@index([roomId])
+  @@map("cleaning_requests")
+}
+
+model CleaningStatusLog {
+  id                String         @id @default(uuid())
+  cleaningRequestId String
+  staffId           String
+  status            CleaningStatus
+  note              String?
+  loggedAt          DateTime       @default(now())
+
+  cleaningRequest   CleaningRequest @relation(fields: [cleaningRequestId], references: [id])
+  staff             Staff           @relation(fields: [staffId], references: [id])
+
+  @@map("cleaning_status_logs")
+}
+
+model StaffRoomAssignment {
+  id          String   @id @default(uuid())
+  staffId     String
+  roomId      String
+  assignedAt  DateTime @default(now())
+  isActive    Boolean  @default(true)
+
+  staff       Staff    @relation(fields: [staffId], references: [id])
+  room        Room     @relation(fields: [roomId], references: [id])
+
+  @@unique([staffId, roomId])
+  @@map("staff_room_assignments")
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  userId      String
+  sentById    String?
+  type        NotificationType
+  title       String
+  message     String           @db.Text
+  isRead      Boolean          @default(false)
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+
+  user        User    @relation(fields: [userId], references: [id])
+  sentBy      User?   @relation("SentBy", fields: [sentById], references: [id])
+
+  @@index([userId])
+  @@index([isRead])
+  @@map("notifications")
+}
+
+model Report {
+  id          String   @id @default(uuid())
+  adminId     String
+  title       String
+  type        String   // "FEE_SUMMARY" | "OCCUPANCY" | "COMPLAINT" | "LEAVE"
+  data        Json
+  generatedAt DateTime @default(now())
+
+  admin       Admin    @relation(fields: [adminId], references: [id])
+
+  @@index([adminId])
+  @@map("reports")
+}
