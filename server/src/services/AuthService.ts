@@ -10,6 +10,7 @@ import { Admin } from "../classes/Admin";
 import { Role } from "../classes/User";
 import {
   StudentSignupInput,
+  AdminSignupInput,
   StaffSignupInput,
   LoginInput,
 } from "../validators/authValidators";
@@ -50,6 +51,34 @@ export class AuthService {
     return bcrypt.compare(password, hash);
   }
 
+  /**
+   * Login with email and password
+   */
+  async login(input: LoginInput): Promise<AuthResult> {
+    const user = await this.db.user.findUnique({ where: { email: input.email } });
+    if (!user) throw new Error("User not found");
+
+    const isPasswordValid = await this.comparePassword(input.password, user.passwordHash);
+    if (!isPasswordValid) throw new Error("Invalid password");
+
+    const token = this.signToken({
+      userId: user.id,
+      subId: user.id,
+      role: user.role,
+    });
+
+    return {
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        isActive: user.isActive,
+      },
+    };
+  }
 
   async studentSignup(input: StudentSignupInput): Promise<AuthResult> {
     const existingEmail = await this.db.user.findUnique({ where: { email: input.email } });
@@ -110,6 +139,71 @@ export class AuthService {
       user: {
         ...studentObj.getProfileSummary(),
         permissions: studentObj.getPermissions(),
+      },
+    };
+  }
+
+  /**
+   * Admin Signup
+   * Creates a new admin user with Admin table entry
+   */
+  async adminSignup(input: AdminSignupInput): Promise<AuthResult> {
+    // Check if email already exists
+    const existingEmail = await this.db.user.findUnique({
+      where: { email: input.email },
+    });
+    if (existingEmail) throw new Error("Email already registered.");
+
+    // Hash password
+    const passwordHash = await this.hashPassword(input.password);
+    const userId = uuidv4();
+    const adminId = uuidv4();
+
+    // Create user and admin in transaction
+    await this.db.$transaction([
+      this.db.user.create({
+        data: {
+          id: userId,
+          email: input.email,
+          passwordHash,
+          firstName: input.firstName,
+          lastName: input.lastName,
+          phone: input.phone,
+          role: "ADMIN",
+          isActive: true,
+        },
+      }),
+      this.db.admin.create({
+        data: {
+          id: adminId,
+          userId,
+          adminLevel: 1, // Default to Warden level
+        },
+      }),
+    ]);
+
+    // Create Admin object from domain model
+    const adminObj = new Admin({
+      id: adminId,
+      email: input.email,
+      passwordHash,
+      firstName: input.firstName,
+      lastName: input.lastName,
+      phone: input.phone,
+    });
+
+    // Sign JWT token
+    const token = this.signToken({
+      userId,
+      subId: adminId,
+      role: Role.ADMIN,
+    });
+
+    return {
+      token,
+      user: {
+        ...adminObj.getProfileSummary(),
+        permissions: adminObj.getPermissions(),
       },
     };
   }

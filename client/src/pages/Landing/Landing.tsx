@@ -21,15 +21,15 @@ const Landing = () => {
   return (
     <div className="landing">
 
-      {/* 🔥 TITLE */}
+
       <h1 className="title">HostelHub</h1>
 
-      {/* 🔥 ANIMATED TEXT */}
+
       <p key={textIndex} className="animated-text">
         {texts[textIndex]}
       </p>
 
-      {/* 🔥 CARDS */}
+
       <div className="card-container">
 
         <div
@@ -52,7 +52,7 @@ const Landing = () => {
 
       </div>
 
-      {/* 🔥 FOOTER */}
+
       <footer className="footer">
         <p>© 2026 HostelHub</p>
         <p>Smart Hostel Management System</p>

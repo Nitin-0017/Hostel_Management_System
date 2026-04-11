@@ -1,4 +1,4 @@
-/* FULL PAGE WITH DARK OVERLAY */
+
 .landing {
   height: 100vh;
   background: 
@@ -15,18 +15,19 @@
   text-align: center;
 }
 
-/* 🔥 TITLE */
+
 .title {
   font-size: 64px;
   font-weight: 800;
   letter-spacing: 2px;
   margin-bottom: 1rem;
+  color: white;
 
   text-shadow: 0 4px 20px rgba(0,0,0,0.9);
   animation: fadeSlide 1s ease;
 }
 
-/* 🔥 TEXT */
+
 .animated-text {
   font-size: 20px;
   color: #f1f1f1;
@@ -36,14 +37,14 @@
   animation: fadeText 1s ease;
 }
 
-/* 🔥 CARDS */
+
 .card-container {
   display: flex;
   gap: 8rem;
   margin-bottom: 10rem;
 }
 
-/* 🔥 ROLE CARD */
+
 .role-card {
   width: 240px;
   height: 300px;
@@ -52,7 +53,7 @@
   cursor: pointer;
   position: relative;
 
-  /* 🔥 ADD THIS */
+
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.2);
@@ -65,7 +66,7 @@
   box-shadow: 0 15px 40px rgba(0,0,0,0.5);
 }
 
-/* 🔥 BACKGROUNDS */
+
 .role-card.admin {
   background: url("https://images.unsplash.com/photo-1551836022-d5d88e9218df")
     no-repeat center/cover;
@@ -76,7 +77,7 @@
     no-repeat center/cover;
 }
 
-/* 🔥 OVERLAY */
+
 .card-overlay {
   background: rgba(0, 0, 0, 0.50);
   height: 100%;
@@ -91,7 +92,7 @@
   letter-spacing: 1px;
 }
 
-/* 🔥 FOOTER (FIXED VISIBILITY) */
+
 .footer {
   position: absolute;
   bottom: 0;
@@ -101,7 +102,7 @@
   color: #ddd;
 }
 
-/* 🔥 ANIMATIONS */
+
 @keyframes fadeSlide {
   from {
     opacity: 0;

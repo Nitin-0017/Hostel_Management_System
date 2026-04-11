@@ -1,8 +1,5 @@
-
-
-/* 🔥 CARD */
 .login-card {
-  background: #F5EFEB; /* beige */
+  background: #F5EFEB; 
   padding: 35px;
   border-radius: 18px;
   width: 340px;
@@ -11,13 +8,13 @@
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* 🔥 TITLE */
+
 .login-card h2 {
   margin-bottom: 20px;
   color: #2F4156;
 }
 
-/* 🔥 INPUTS */
+
 .login-card input {
   width: 100%;
   padding: 12px;
@@ -32,13 +29,13 @@
   transition: 0.2s;
 }
 
-/* 🔥 INPUT FOCUS */
+
 .login-card input:focus {
   border: 1px solid #567C8D;
   box-shadow: 0 0 5px rgba(86, 124, 141, 0.5);
 }
 
-/* 🔥 BUTTON */
+
 .login-card button {
   width: 100%;
   padding: 12px;
@@ -54,12 +51,12 @@
   transition: 0.3s;
 }
 
-/* 🔥 BUTTON HOVER */
+
 .login-card button:hover {
   background: #2F4156;
 }
 
-/* 🔥 SIGNUP LINK */
+
 .signup-link {
   margin-top: 15px;
   font-size: 14px;
@@ -76,14 +73,14 @@
   text-decoration: underline;
 }
 
-/* 🔥 SPLIT LAYOUT */
+
 .login {
   height: 100vh;
   display: flex;
   font-family: "Poppins", sans-serif;
 }
 
-/* 🔥 LEFT SIDE */
+
 .login-left {
   flex: 1;
   background: url("https://i.pinimg.com/1200x/fa/64/86/fa648630b598189c574b5a61359da099.jpg")
@@ -91,7 +88,7 @@
   position: relative;
 }
 
-/* 🔥 LEFT OVERLAY */
+
 .left-overlay {
   position: absolute;
   inset: 0;
@@ -109,6 +106,9 @@
 .left-overlay h1 {
   font-size: 48px;
   margin-bottom: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .left-overlay p {
@@ -116,7 +116,7 @@
   color: #ddd;
 }
 
-/* 🔥 RIGHT SIDE */
+
 .login-right {
   flex: 1;
   display: flex;
@@ -126,7 +126,7 @@
   background: linear-gradient(135deg, #2F4156, #9cb6c3);
 }
 
-/* 🔥 RESPONSIVE */
+
 @media (max-width: 768px) {
   .login {
     flex-direction: column;

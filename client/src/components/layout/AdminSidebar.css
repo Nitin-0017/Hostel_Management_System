@@ -1,0 +1,148 @@
+
+
+.admin-sidebar .logo-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-sidebar .logo-role-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-navy);
+  background: var(--color-lightTeal);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm, 6px);
+  align-self: flex-start;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+
+
+.admin-sidebar .nav-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing-md, 12px);
+}
+
+.admin-sidebar .nav-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: var(--spacing-sm, 8px) var(--spacing-lg, 16px);
+  margin-top: var(--spacing-sm, 8px);
+  user-select: none;
+}
+
+.admin-sidebar .nav-group + .nav-group {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: var(--spacing-sm, 8px);
+}
+
+
+
+.admin-sidebar .badge {
+  margin-left: auto;
+  background: var(--color-warning, #F59E0B);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  min-width: 18px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+
+
+.admin-sidebar .admin-profile-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 8px);
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 12px);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md, 8px);
+  margin-bottom: var(--spacing-sm, 8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-sidebar .admin-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-teal, #567C8D);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-sidebar .admin-profile-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.admin-sidebar .admin-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-sidebar .admin-role {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+
+
+.admin-sidebar.collapsed .admin-profile-chip {
+  display: none;
+}
+
+.admin-sidebar.collapsed .nav-group-label {
+  display: none;
+}
+
+.admin-sidebar.collapsed .nav-group + .nav-group {
+  border-top: none;
+}
+
+.admin-sidebar.collapsed .nav-group {
+  margin-bottom: var(--spacing-xs, 4px);
+}
+
+
+
+@media (max-width: 768px) {
+  .admin-sidebar .nav-group-label {
+    display: none;
+  }
+
+  .admin-sidebar .nav-group + .nav-group {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .admin-sidebar .nav-group {
+    margin-bottom: 0;
+  }
+
+  .admin-sidebar .admin-profile-chip {
+    display: none;
+  }
+}
