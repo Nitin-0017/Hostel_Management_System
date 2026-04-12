@@ -1,101 +1,80 @@
 import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import type { IUser, IStudentSignupRequest } from "../types";
+import type { IStudentSignupRequest, IStaffSignupRequest } from "../types";
 import authService from "../services/authService";
 import { AuthContext } from "./AuthContextDef";
+import type { AuthRole } from "./AuthContextDef";
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<IUser | null>(null);
-  const [loginRole, setLoginRole] = useState<"ADMIN" | "STUDENT" | null>(null);
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState(authService.getCurrentUser());
+  const [loginRole, setLoginRole] = useState<AuthRole>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
   useEffect(() => {
     try {
-      const storedUser = authService.getCurrentUser();
-      if (storedUser) {
-        setUser(storedUser);
-      }
-    } catch (err) {
-      console.error("Failed to restore auth state:", err);
+      const stored = authService.getCurrentUser();
+      if (stored) setUser(stored);
+    } catch (e) {
+      console.error("Failed to restore auth state:", e);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
+  const extractMessage = (err: unknown): string => {
+    const e = err as Record<string, unknown>;
+    return String(
+      ((e.response as Record<string, unknown>)?.data as Record<string, unknown>)?.message ||
+        (e as Record<string, unknown>).message ||
+        "Operation failed"
+    );
+  };
 
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (email: string, password: string, role?: AuthRole): Promise<void> => {
     setIsLoading(true);
     setError(null);
-
     try {
-      const response = await authService.login({ email, password });
-
-      if (response.user) {
-        setUser(response.user);
-      } else {
-        throw new Error("No user data in response");
-      }
+      const res = await authService.login({ email, password }, role ?? loginRole);
+      if (!res.user) throw new Error("No user data in response");
+      setUser(res.user);
     } catch (err) {
-      const error_obj = err as Record<string, unknown>;
-      const errorMessage =
-        ((error_obj.response as Record<string, Record<string, unknown>>)
-          ?.data as Record<string, unknown>)?.message ||
-        (error_obj as Record<string, unknown>).message ||
-        "Login failed";
-      setError(String(errorMessage));
+      setError(extractMessage(err));
       throw err;
     } finally {
       setIsLoading(false);
     }
   };
 
-
-  const signup = async (data: IStudentSignupRequest): Promise<void> => {
+  const signupStudent = async (data: IStudentSignupRequest): Promise<void> => {
     setIsLoading(true);
     setError(null);
-
     try {
-      let response;
-      
-
-      if (loginRole === "ADMIN") {
-        response = await authService.signupAdmin({
-          email: data.email,
-          password: data.password,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          phone: data.phone,
-        });
-      } else {
-        response = await authService.signupStudent(data);
-      }
-
-      if (response.user) {
-        setUser(response.user);
-      } else {
-        throw new Error("No user data in response");
-      }
+      const res = await authService.signupStudent(data);
+      if (!res.user) throw new Error("No user data in response");
+      setUser(res.user);
     } catch (err) {
-      const error_obj = err as Record<string, unknown>;
-      const errorMessage =
-        ((error_obj.response as Record<string, Record<string, unknown>>)
-          ?.data as Record<string, unknown>)?.message ||
-        (error_obj as Record<string, unknown>).message ||
-        "Signup failed";
-      setError(String(errorMessage));
+      setError(extractMessage(err));
       throw err;
     } finally {
       setIsLoading(false);
     }
   };
 
+  const signupStaff = async (data: IStaffSignupRequest): Promise<void> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await authService.signupStaff(data);
+      if (!res.user) throw new Error("No user data in response");
+      setUser(res.user);
+    } catch (err) {
+      setError(extractMessage(err));
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const logout = (): void => {
     authService.logout();
@@ -103,25 +82,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setError(null);
   };
 
- 
-  const clearError = (): void => {
-    setError(null);
-  };
-
-  const value = {
-    user,
-    loginRole,
-    isAuthenticated: !!user,
-    isLoading,
-    error,
-    login,
-    signup,
-    logout,
-    clearError,
-    setLoginRole,
-  };
-
   return (
-    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{
+        user,
+        loginRole,
+        isAuthenticated: !!user,
+        isLoading,
+        error,
+        login,
+        signupStudent,
+        signupStaff,
+        logout,
+        clearError: () => setError(null),
+        setLoginRole,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };

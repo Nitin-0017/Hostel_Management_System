@@ -15,20 +15,19 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-        
           <Route path="/" element={<Landing />} />
 
-
+          {/* Login routes — all 3 roles */}
           <Route path="/login" element={<Login />} />
           <Route path="/login/admin" element={<Login />} />
           <Route path="/login/student" element={<Login />} />
+          <Route path="/login/staff" element={<Login />} />
 
-
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/signup/admin" element={<Signup />} />
+          {/* Signup routes — Student & Staff only (no admin signup) */}
           <Route path="/signup/student" element={<Signup />} />
+          <Route path="/signup/staff" element={<Signup />} />
 
-
+          {/* Protected dashboards */}
           <Route
             path="/dashboard/admin"
             element={
@@ -37,7 +36,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/dashboard/student"
             element={
@@ -46,7 +44,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="/dashboard/staff"
+            element={
+              <ProtectedRoute requiredRole="STAFF">
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/dashboard" element={<Navigate to="/" replace />} />
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />

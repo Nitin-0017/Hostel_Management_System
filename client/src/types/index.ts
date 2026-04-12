@@ -1,11 +1,8 @@
-
-
 export enum UserRole {
   STUDENT = "STUDENT",
   ADMIN = "ADMIN",
   STAFF = "STAFF",
 }
-
 
 export interface IUser {
   id: string;
@@ -19,7 +16,6 @@ export interface IUser {
   updatedAt: string;
 }
 
-
 export interface IStudent extends IUser {
   enrollmentNumber: string;
   course: string;
@@ -30,18 +26,15 @@ export interface IStudent extends IUser {
   joiningDate: string;
 }
 
-
 export interface IAdmin extends IUser {
   department?: string;
   permissions: string[];
 }
 
-
 export interface IStaff extends IUser {
   staffId: string;
   department?: string;
 }
-
 
 export interface IAuthResponse {
   success: boolean;
@@ -52,12 +45,10 @@ export interface IAuthResponse {
   statusCode?: number;
 }
 
-
 export interface ILoginRequest {
   email: string;
   password: string;
 }
-
 
 export interface IStudentSignupRequest extends ILoginRequest {
   firstName: string;
@@ -71,6 +62,15 @@ export interface IStudentSignupRequest extends ILoginRequest {
   address?: string;
 }
 
+// Matches backend staffSignupSchema exactly
+export interface IStaffSignupRequest extends ILoginRequest {
+  firstName: string;
+  lastName: string;
+  employeeId: string;
+  designation: string;
+  department?: string;
+  phone?: string;
+}
 
 export interface IAdminSignupRequest extends ILoginRequest {
   firstName: string;
@@ -78,22 +78,12 @@ export interface IAdminSignupRequest extends ILoginRequest {
   phone?: string;
 }
 
-
-export interface IStaffSignupRequest extends ILoginRequest {
-  firstName: string;
-  lastName: string;
-  department?: string;
-  phone?: string;
-}
-
-
 export interface IErrorResponse {
   success: false;
   message: string;
   errors?: string[];
   statusCode: number;
 }
-
 
 export interface IRoom {
   id: string;
@@ -106,7 +96,6 @@ export interface IRoom {
   createdAt: string;
   updatedAt: string;
 }
-
 
 export enum ComplaintStatus {
   OPEN = "OPEN",
@@ -127,7 +116,6 @@ export interface IComplaint {
   assignedTo?: string;
 }
 
-
 export enum LeaveStatus {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
@@ -145,7 +133,6 @@ export interface ILeaveRequest {
   updatedAt: string;
 }
 
-
 export interface IFeeRecord {
   id: string;
   studentId: string;
@@ -158,7 +145,6 @@ export interface IFeeRecord {
   updatedAt: string;
 }
 
-
 export interface INotification {
   id: string;
   userId: string;
@@ -167,7 +153,6 @@ export interface INotification {
   isRead: boolean;
   createdAt: string;
 }
-
 
 export interface IApiResponse<T> {
   success: boolean;

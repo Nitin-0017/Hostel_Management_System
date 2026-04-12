@@ -17,15 +17,6 @@ export const studentSignupSchema = z.object({
   address: z.string().optional(),
 });
 
-export const adminSignupSchema = z.object({
-  // User fields
-  email: z.string().email("Invalid email address."),
-  password: z.string().min(6, "Password must be at least 6 characters."),
-  firstName: z.string().min(1, "First name is required."),
-  lastName: z.string().min(1, "Last name is required."),
-  phone: z.string().optional(),
-}).strict(); // Ensures no extra fields like enrollmentNumber
-
 export const staffSignupSchema = z.object({
   // User fields
   email: z.string().email("Invalid email address."),
@@ -51,6 +42,5 @@ export const adminLoginSchema = z.object({
 });
 
 export type StudentSignupInput = z.infer<typeof studentSignupSchema>;
-export type AdminSignupInput   = z.infer<typeof adminSignupSchema>;
 export type StaffSignupInput   = z.infer<typeof staffSignupSchema>;
 export type LoginInput         = z.infer<typeof loginSchema>;

@@ -1,7 +1,14 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import Icon from "../dashboard/Icon";
 import "./Navbar.css";
+
+const ROLE_LABELS: Record<string, string> = {
+  STUDENT: "Student",
+  STAFF: "Staff",
+  ADMIN: "Admin",
+};
 
 interface Notification {
   id: string;
@@ -13,7 +20,8 @@ interface Notification {
 }
 
 const Navbar: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
@@ -151,7 +159,7 @@ const Navbar: React.FC = () => {
               <div className="avatar">
                 <span>
                   {user
-                    ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+                    ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase() || "U"
                     : "U"}
                 </span>
               </div>
@@ -160,7 +168,7 @@ const Navbar: React.FC = () => {
                   {user ? `${user.firstName} ${user.lastName}` : "Student"}
                 </div>
                 <div className="profile-role">
-                  {user?.role === "STUDENT" ? "Student" : "Admin"}
+                  {user?.role ? ROLE_LABELS[user.role] ?? user.role : "Guest"}
                 </div>
               </div>
               <span className="dropdown-icon">
@@ -170,17 +178,17 @@ const Navbar: React.FC = () => {
 
             {showProfile && (
               <div className="profile-dropdown">
-                <a href="/profile" className="dropdown-item">
+                <button className="dropdown-item" onClick={() => navigate("/profile")}>
                   <Icon name="user" size="sm" /> My Profile
-                </a>
-                <a href="/settings" className="dropdown-item">
+                </button>
+                <button className="dropdown-item" onClick={() => navigate("/settings")}>
                   <Icon name="settings" size="sm" /> Settings
-                </a>
-                <a href="/help" className="dropdown-item">
+                </button>
+                <button className="dropdown-item" onClick={() => navigate("/help")}>
                   <Icon name="help" size="sm" /> Help & Support
-                </a>
+                </button>
                 <div className="dropdown-divider" />
-                <button className="dropdown-item logout">
+                <button className="dropdown-item logout" onClick={logout}>
                   <Icon name="logout" size="sm" /> Logout
                 </button>
               </div>

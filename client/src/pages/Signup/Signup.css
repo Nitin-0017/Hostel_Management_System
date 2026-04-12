@@ -1,10 +1,8 @@
-
 .signup {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   font-family: "Poppins", sans-serif;
 }
-
 
 .signup-left {
   flex: 1;
@@ -13,17 +11,14 @@
   position: relative;
 }
 
-
 .left-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.5);
-
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   color: white;
   text-align: center;
 }
@@ -41,100 +36,165 @@
   color: #ddd;
 }
 
-
 .signup-right {
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
-
-  background: linear-gradient(135deg, #2F4156, #9cb6c3);
+  align-items: flex-start;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #2f4156, #9cb6c3);
+  overflow-y: auto;
 }
 
-
 .signup-card {
-  background: #F5EFEB;
-  padding: 35px;
+  background: #f5efeb;
+  padding: 32px 35px;
   border-radius: 18px;
-  width: 320px;
+  width: 100%;
+  max-width: 400px;
   text-align: center;
-
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
+/* Role badge */
+.role-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.role-badge--student {
+  background: #e8f4fd;
+  color: #2471a3;
+}
+
+.role-badge--staff {
+  background: #e8fdf0;
+  color: #1e8449;
+}
 
 .signup-card h2 {
-  margin-bottom: 20px;
-  color: #2F4156;
+  margin-bottom: 16px;
+  color: #2f4156;
+  font-size: 22px;
 }
 
+/* Side-by-side first/last name */
+.field-row {
+  display: flex;
+  gap: 10px;
+}
 
-.signup-card input {
+.field-row .field-group {
+  flex: 1;
+}
+
+/* Field group */
+.field-group {
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.field-group input,
+.field-group select {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-
+  padding: 11px 12px;
   border-radius: 10px;
-  border: 1px solid #C8D9E6;
-
+  border: 1px solid #c8d9e6;
+  background: #ffffff;
   outline: none;
+  transition: 0.2s;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  color: #2f4156;
 }
 
+.field-group input:focus,
+.field-group select:focus {
+  border: 1px solid #567c8d;
+  box-shadow: 0 0 5px rgba(86, 124, 141, 0.5);
+}
 
-.signup-card button {
+.field-group input.input-error {
+  border-color: #e74c3c;
+}
+
+.field-error {
+  display: block;
+  font-size: 12px;
+  color: #e74c3c;
+  margin-top: 4px;
+  padding-left: 2px;
+}
+
+.error-message {
+  background-color: #fde8e8;
+  color: #c0392b;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid #f5c6cb;
+  font-size: 13px;
+  text-align: left;
+}
+
+.submit-btn {
   width: 100%;
   padding: 12px;
-
   border: none;
   border-radius: 10px;
-
-  background: #567C8D;
+  background: #567c8d;
   color: white;
   font-weight: 600;
-
+  font-size: 15px;
   cursor: pointer;
+  transition: 0.3s;
+  margin-top: 6px;
+  font-family: "Poppins", sans-serif;
 }
 
-.signup-card button:hover {
-  background: #2F4156;
+.submit-btn:hover:not(:disabled) {
+  background: #2f4156;
 }
 
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 
 .login-link {
-  margin-top: 15px;
+  margin-top: 16px;
   font-size: 14px;
-  color: #2F4156;
+  color: #2f4156;
 }
 
 .login-link span {
-  color: #567C8D;
+  color: #567c8d;
   cursor: pointer;
   font-weight: 600;
 }
 
-
-.error-message {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #f5c6cb;
-  font-size: 14px;
-  text-align: center;
+.login-link span:hover {
+  text-decoration: underline;
 }
 
-
-.signup-card select {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  border: 1px solid #C8D9E6;
-  outline: none;
+.back-link {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #567c8d;
   cursor: pointer;
+  display: inline-block;
 }
 
+.back-link:hover {
+  text-decoration: underline;
+}
 
 @media (max-width: 768px) {
   .signup {
@@ -142,10 +202,16 @@
   }
 
   .signup-left {
-    height: 35vh;
+    height: 28vh;
+    flex: none;
   }
 
   .signup-right {
-    height: 65vh;
+    padding: 24px 16px;
+  }
+
+  .field-row {
+    flex-direction: column;
+    gap: 0;
   }
 }

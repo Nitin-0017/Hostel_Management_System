@@ -2,226 +2,101 @@ import apiClient from "../config/apiClient";
 import type {
   ILoginRequest,
   IStudentSignupRequest,
-  IAdminSignupRequest,
+  IStaffSignupRequest,
   IAuthResponse,
   IUser,
 } from "../types";
 
+export type AuthRole = "ADMIN" | "STUDENT" | "STAFF" | null;
 
+const TOKEN_KEY = "authToken";
+const USER_KEY = "user";
+
+function saveSession(data: IAuthResponse): void {
+  if (data.token) localStorage.setItem(TOKEN_KEY, data.token);
+  if (data.user) localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+}
+
+function extractError(error: unknown): never {
+  const err = error as Record<string, unknown>;
+  const msg =
+    ((err.response as Record<string, unknown>)?.data as Record<string, unknown>)?.message ||
+    (err as Record<string, unknown>).message ||
+    "Request failed. Please try again.";
+  throw new Error(String(msg));
+}
+
+const LOGIN_ENDPOINTS: Record<string, string> = {
+  ADMIN: "/users/admin/login",
+  STUDENT: "/users/student/login",
+  STAFF: "/users/staff/login",
+};
 
 class AuthService {
-  private readonly TOKEN_KEY = "authToken";
-  private readonly REFRESH_TOKEN_KEY = "refreshToken";
-  private readonly USER_KEY = "user";
-
-  /**
-   * Login user with email and password
-   * Design Pattern: Strategy Pattern (can extend with OAuth, SSO, etc.)
-   *
-   * @param credentials - Email and password
-   * @returns Auth response with token and user data
-   */
-  async login(credentials: ILoginRequest): Promise<IAuthResponse> {
+  async login(credentials: ILoginRequest, role: AuthRole): Promise<IAuthResponse> {
+    const endpoint = role ? LOGIN_ENDPOINTS[role] : LOGIN_ENDPOINTS["STUDENT"];
     try {
-      const response = await apiClient.post<IAuthResponse>(
-        "/auth/login",
+      const res = await apiClient.post<{ success: boolean; data: IAuthResponse }>(
+        endpoint,
         credentials
       );
-
-
-      if (response.data.token) {
-        localStorage.setItem(this.TOKEN_KEY, response.data.token);
-      }
-      if (response.data.refreshToken) {
-        localStorage.setItem(
-          this.REFRESH_TOKEN_KEY,
-          response.data.refreshToken
-        );
-      }
-
-
-      if (response.data.user) {
-        localStorage.setItem(this.USER_KEY, JSON.stringify(response.data.user));
-      }
-
-      return response.data;
+      const data = res.data.data;
+      saveSession(data);
+      return data;
     } catch (error) {
-      const err = error as Record<string, unknown>;
-      const errorMessage =
-        ((err.response as Record<string, unknown>)?.data as Record<
-          string,
-          unknown
-        >)?.message ||
-        (err as Record<string, unknown>).message ||
-        "Login failed. Please try again.";
-
-      throw new Error(String(errorMessage));
+      extractError(error);
     }
   }
 
-  /**
-   * Register new student
-   * Design Pattern: Strategy Pattern (extensible for different user types)
-   *
-   * @param data - Student signup data
-   * @returns Auth response with token and user data
-   */
   async signupStudent(data: IStudentSignupRequest): Promise<IAuthResponse> {
     try {
-      const response = await apiClient.post<IAuthResponse>(
-        "/auth/student/signup",
+      const res = await apiClient.post<{ success: boolean; data: IAuthResponse }>(
+        "/users/student/signup",
         data
       );
-
-
-      if (response.data.token) {
-        localStorage.setItem(this.TOKEN_KEY, response.data.token);
-      }
-      if (response.data.refreshToken) {
-        localStorage.setItem(
-          this.REFRESH_TOKEN_KEY,
-          response.data.refreshToken
-        );
-      }
-
-
-      if (response.data.user) {
-        localStorage.setItem(this.USER_KEY, JSON.stringify(response.data.user));
-      }
-
-      return response.data;
+      const resData = res.data.data;
+      saveSession(resData);
+      return resData;
     } catch (error) {
-      const err = error as Record<string, unknown>;
-      const errorMessage =
-        ((err.response as Record<string, unknown>)?.data as Record<
-          string,
-          unknown
-        >)?.message ||
-        (err as Record<string, unknown>).message ||
-        "Signup failed. Please try again.";
-
-      throw new Error(String(errorMessage));
+      extractError(error);
     }
   }
 
-  /**
-   * Register new admin
-   * Design Pattern: Strategy Pattern (extensible for different user types)
-   *
-   * @param data - Admin signup data
-   * @returns Auth response with token and user data
-   */
-  async signupAdmin(data: IAdminSignupRequest): Promise<IAuthResponse> {
+  async signupStaff(data: IStaffSignupRequest): Promise<IAuthResponse> {
     try {
-      const response = await apiClient.post<IAuthResponse>(
-        "/auth/admin/signup",
+      const res = await apiClient.post<{ success: boolean; data: IAuthResponse }>(
+        "/users/staff/signup",
         data
       );
-
-
-      if (response.data.token) {
-        localStorage.setItem(this.TOKEN_KEY, response.data.token);
-      }
-      if (response.data.refreshToken) {
-        localStorage.setItem(
-          this.REFRESH_TOKEN_KEY,
-          response.data.refreshToken
-        );
-      }
-
-
-      if (response.data.user) {
-        localStorage.setItem(this.USER_KEY, JSON.stringify(response.data.user));
-      }
-
-      return response.data;
+      const resData = res.data.data;
+      saveSession(resData);
+      return resData;
     } catch (error) {
-      const err = error as Record<string, unknown>;
-      const errorMessage =
-        ((err.response as Record<string, unknown>)?.data as Record<
-          string,
-          unknown
-        >)?.message ||
-        (err as Record<string, unknown>).message ||
-        "Admin signup failed. Please try again.";
-
-      throw new Error(String(errorMessage));
+      extractError(error);
     }
   }
 
- 
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
   }
 
-  /**
-   * Get current logged-in user from localStorage
-   *
-   * @returns User object or null if not logged in
-   */
   getCurrentUser(): IUser | null {
     try {
-      const user = localStorage.getItem(this.USER_KEY);
-      return user ? JSON.parse(user) : null;
-    } catch (error) {
-      console.error("Failed to parse user data:", error);
+      const raw = localStorage.getItem(USER_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
       return null;
     }
   }
 
-  /**
-   * Check if user is authenticated
-   *
-   * @returns True if token exists, false otherwise
-   */
   isAuthenticated(): boolean {
-    return !!localStorage.getItem(this.TOKEN_KEY);
+    return !!localStorage.getItem(TOKEN_KEY);
   }
 
-  /**
-   * Get stored authentication token
-   *
-   * @returns JWT token or null
-   */
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
-  }
-
-  /**
-   * Get stored refresh token
-   *
-   * @returns Refresh token or null
-   */
-  getRefreshToken(): string | null {
-    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
-  }
-
-  async refreshAccessToken(): Promise<string> {
-    try {
-      const refreshToken = this.getRefreshToken();
-
-      if (!refreshToken) {
-        throw new Error("No refresh token available");
-      }
-
-      const response = await apiClient.post<IAuthResponse>("/auth/refresh", {
-        refreshToken,
-      });
-
-      if (response.data.token) {
-        localStorage.setItem(this.TOKEN_KEY, response.data.token);
-        return response.data.token;
-      }
-
-      throw new Error("No token in refresh response");
-    } catch (error) {
-      this.logout();
-      throw error;
-    }
+    return localStorage.getItem(TOKEN_KEY);
   }
 }
-
 
 export default new AuthService();
