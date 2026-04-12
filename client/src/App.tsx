@@ -1,14 +1,26 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useAuth } from "./hooks/useAuth";
 
 import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
 import StudentDashboard from "./pages/Dashboard/StudentDashboard";
+import StaffDashboard from "./pages/Dashboard/StaffDashboard";
 
 import "./App.css";
+
+// Redirects authenticated users to their role-specific dashboard
+const RoleRedirect = () => {
+  const { user, isAuthenticated } = useAuth();
+  if (!isAuthenticated || !user) return <Navigate to="/" replace />;
+  if (user.role === "ADMIN")   return <Navigate to="/dashboard/admin"   replace />;
+  if (user.role === "STAFF")   return <Navigate to="/dashboard/staff"   replace />;
+  if (user.role === "STUDENT") return <Navigate to="/dashboard/student" replace />;
+  return <Navigate to="/" replace />;
+};
 
 function App() {
   return (
@@ -18,16 +30,18 @@ function App() {
           <Route path="/" element={<Landing />} />
 
           {/* Login routes — all 3 roles */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/login/admin" element={<Login />} />
+          <Route path="/login/admin"   element={<Login />} />
           <Route path="/login/student" element={<Login />} />
-          <Route path="/login/staff" element={<Login />} />
+          <Route path="/login/staff"   element={<Login />} />
 
           {/* Signup routes — Student & Staff only (no admin signup) */}
           <Route path="/signup/student" element={<Signup />} />
-          <Route path="/signup/staff" element={<Signup />} />
+          <Route path="/signup/staff"   element={<Signup />} />
 
-          {/* Protected dashboards */}
+          {/* Auto-redirect to role dashboard */}
+          <Route path="/dashboard" element={<RoleRedirect />} />
+
+          {/* Protected role dashboards */}
           <Route
             path="/dashboard/admin"
             element={
@@ -48,12 +62,11 @@ function App() {
             path="/dashboard/staff"
             element={
               <ProtectedRoute requiredRole="STAFF">
-                <StudentDashboard />
+                <StaffDashboard />
               </ProtectedRoute>
             }
           />
 
-          <Route path="/dashboard" element={<Navigate to="/" replace />} />
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />
         </Routes>
       </AuthProvider>

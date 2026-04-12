@@ -9,9 +9,9 @@ export interface IAuthContext {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  login: (email: string, password: string, role?: AuthRole) => Promise<void>;
-  signupStudent: (data: IStudentSignupRequest) => Promise<void>;
-  signupStaff: (data: IStaffSignupRequest) => Promise<void>;
+  login: (email: string, password: string, role?: AuthRole) => Promise<string>;
+  signupStudent: (data: IStudentSignupRequest) => Promise<string>;
+  signupStaff: (data: IStaffSignupRequest) => Promise<string>;
   logout: () => void;
   clearError: () => void;
   setLoginRole: (role: AuthRole) => void;

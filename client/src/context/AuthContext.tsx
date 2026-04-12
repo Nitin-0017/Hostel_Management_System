@@ -31,28 +31,33 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
   };
 
-  const login = async (email: string, password: string, role?: AuthRole): Promise<void> => {
+  // Returns the resolved user role on success so callers can navigate.
+  // Throws on failure — callers must catch and stay on their page.
+  const login = async (email: string, password: string, role?: AuthRole): Promise<string> => {
     setIsLoading(true);
     setError(null);
     try {
       const res = await authService.login({ email, password }, role ?? loginRole);
       if (!res.user) throw new Error("No user data in response");
       setUser(res.user);
+      return res.user.role as string;
     } catch (err) {
       setError(extractMessage(err));
-      throw err;
+      throw err;          // re-throw so Login page stays put
     } finally {
       setIsLoading(false);
     }
   };
 
-  const signupStudent = async (data: IStudentSignupRequest): Promise<void> => {
+  // Returns resolved role on success; throws on failure.
+  const signupStudent = async (data: IStudentSignupRequest): Promise<string> => {
     setIsLoading(true);
     setError(null);
     try {
       const res = await authService.signupStudent(data);
       if (!res.user) throw new Error("No user data in response");
       setUser(res.user);
+      return res.user.role as string;
     } catch (err) {
       setError(extractMessage(err));
       throw err;
@@ -61,13 +66,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const signupStaff = async (data: IStaffSignupRequest): Promise<void> => {
+  const signupStaff = async (data: IStaffSignupRequest): Promise<string> => {
     setIsLoading(true);
     setError(null);
     try {
       const res = await authService.signupStaff(data);
       if (!res.user) throw new Error("No user data in response");
       setUser(res.user);
+      return res.user.role as string;
     } catch (err) {
       setError(extractMessage(err));
       throw err;

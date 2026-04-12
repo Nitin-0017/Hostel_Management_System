@@ -20,18 +20,27 @@ apiClient.interceptors.request.use((config) => {
 });
 
 
+const AUTH_ENDPOINTS = [
+  "/users/admin/login",
+  "/users/student/login",
+  "/users/staff/login",
+  "/users/student/signup",
+  "/users/staff/signup",
+];
+
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
+    const requestUrl = error.config?.url ?? "";
+    const isAuthEndpoint = AUTH_ENDPOINTS.some((ep) => requestUrl.includes(ep));
 
+    // Only redirect on 401 from protected routes, never from login/signup
+    if (error.response?.status === 401 && !isAuthEndpoint) {
       localStorage.removeItem("authToken");
-      localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
 
-
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
+      if (window.location.pathname !== "/") {
+        window.location.href = "/";
       }
     }
 

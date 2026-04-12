@@ -1,3 +1,18 @@
+/* Shake animation for failed login */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-8px); }
+  30%       { transform: translateX(8px); }
+  45%       { transform: translateX(-6px); }
+  60%       { transform: translateX(6px); }
+  75%       { transform: translateX(-3px); }
+  90%       { transform: translateX(3px); }
+}
+
+.login-card.shake {
+  animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
 .login {
   height: 100vh;
   display: flex;
@@ -129,14 +144,31 @@
 }
 
 .error-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
   background-color: #fde8e8;
   color: #c0392b;
   padding: 10px 14px;
   margin-bottom: 16px;
   border-radius: 8px;
   border: 1px solid #f5c6cb;
+  border-left: 4px solid #c0392b;
   font-size: 13px;
   text-align: left;
+  line-height: 1.5;
+  animation: fadeIn 0.2s ease;
+}
+
+.error-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .submit-btn {
@@ -161,6 +193,29 @@
 .submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* Loading state inside button */
+.btn-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .signup-link {

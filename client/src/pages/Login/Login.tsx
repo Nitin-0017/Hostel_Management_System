@@ -10,7 +10,7 @@ const ROLE_LABELS: Record<string, string> = {
   STAFF: "Staff",
 };
 
-const DASHBOARD_ROUTES: Record<string, string> = {
+const ROLE_DASHBOARDS: Record<string, string> = {
   ADMIN: "/dashboard/admin",
   STUDENT: "/dashboard/student",
   STAFF: "/dashboard/staff",
@@ -28,32 +28,61 @@ function getRoleFromPath(pathname: string): AuthRole {
   return null;
 }
 
+// Map raw backend messages to user-friendly copy
+function friendlyError(raw: string, expectedRole: AuthRole): string {
+  const lower = raw.toLowerCase();
+  if (
+    lower.includes("invalid email or password") ||
+    lower.includes("invalid admin credentials") ||
+    lower.includes("invalid credentials")
+  ) {
+    return expectedRole
+      ? `Incorrect ${ROLE_LABELS[expectedRole]} credentials. Please try again.`
+      : "Invalid credentials. Please try again.";
+  }
+  if (
+    lower.includes("not found") ||
+    lower.includes("no user") ||
+    lower.includes("role")
+  ) {
+    return "Incorrect role or credentials. Make sure you're using the right portal.";
+  }
+  if (lower.includes("deactivated")) {
+    return "Your account has been deactivated. Please contact the administrator.";
+  }
+  if (lower.includes("network") || lower.includes("failed to fetch")) {
+    return "Cannot reach the server. Please check your connection.";
+  }
+  return raw || "Login failed. Please try again.";
+}
+
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, user, setLoginRole } = useAuth();
+  const { login, setLoginRole } = useAuth();
 
   const urlRole = getRoleFromPath(location.pathname);
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [serverError, setServerError] = useState("");
+  const [shake, setShake] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (urlRole) setLoginRole(urlRole);
   }, [urlRole, setLoginRole]);
 
-  useEffect(() => {
-    if (user && urlRole && user.role === urlRole) {
-      navigate(DASHBOARD_ROUTES[urlRole], { replace: true });
-    }
-  }, [user, urlRole, navigate]);
+  const triggerShake = () => {
+    setShake(true);
+    setTimeout(() => setShake(false), 600);
+  };
 
   const validate = (): boolean => {
     const errs: typeof fieldErrors = {};
     if (!form.email) errs.email = "Email is required.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Enter a valid email.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+      errs.email = "Enter a valid email address.";
     if (!form.password) errs.password = "Password is required.";
     setFieldErrors(errs);
     return Object.keys(errs).length === 0;
@@ -61,19 +90,36 @@ const Login = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    // Clear field-level and server errors as user types
     setFieldErrors((prev) => ({ ...prev, [e.target.name]: undefined }));
     setServerError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate()) {
+      triggerShake();
+      return;
+    }
+
     setIsLoading(true);
     setServerError("");
+
     try {
-      await login(form.email, form.password, urlRole);
+      // login() returns the resolved role string on success, throws on failure
+      const resolvedRole = await login(form.email, form.password, urlRole);
+
+      // Only navigate on confirmed success
+      const dest = ROLE_DASHBOARDS[resolvedRole];
+      if (dest) {
+        navigate(dest, { replace: true });
+      }
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "Login failed. Please try again.");
+      const raw = err instanceof Error ? err.message : "Login failed. Please try again.";
+      setServerError(friendlyError(raw, urlRole));
+      triggerShake();
+      // Highlight both fields on auth failure
+      setFieldErrors({ email: " ", password: " " });
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +137,7 @@ const Login = () => {
       </div>
 
       <div className="login-right">
-        <div className="login-card">
+        <div className={`login-card ${shake ? "shake" : ""}`}>
           {urlRole && (
             <div className={`role-badge role-badge--${urlRole.toLowerCase()}`}>
               {roleLabel} Portal
@@ -101,7 +147,12 @@ const Login = () => {
           <h2>Welcome Back</h2>
           <p className="login-subtitle">Sign in to your {roleLabel} account</p>
 
-          {serverError && <div className="error-message">{serverError}</div>}
+          {serverError && (
+            <div className="error-message" role="alert">
+              <span className="error-icon">⚠</span>
+              {serverError}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="field-group">
@@ -113,8 +164,11 @@ const Login = () => {
                 onChange={handleChange}
                 disabled={isLoading}
                 className={fieldErrors.email ? "input-error" : ""}
+                autoComplete="email"
               />
-              {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
+              {fieldErrors.email && fieldErrors.email.trim() && (
+                <span className="field-error">{fieldErrors.email}</span>
+              )}
             </div>
 
             <div className="field-group">
@@ -126,12 +180,21 @@ const Login = () => {
                 onChange={handleChange}
                 disabled={isLoading}
                 className={fieldErrors.password ? "input-error" : ""}
+                autoComplete="current-password"
               />
-              {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
+              {fieldErrors.password && fieldErrors.password.trim() && (
+                <span className="field-error">{fieldErrors.password}</span>
+              )}
             </div>
 
             <button type="submit" disabled={isLoading} className="submit-btn">
-              {isLoading ? "Signing in..." : "Sign In"}
+              {isLoading ? (
+                <span className="btn-loading">
+                  <span className="spinner" /> Signing in...
+                </span>
+              ) : (
+                "Sign In"
+              )}
             </button>
           </form>
 
