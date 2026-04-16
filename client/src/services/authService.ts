@@ -12,9 +12,25 @@ export type AuthRole = "ADMIN" | "STUDENT" | "STAFF" | null;
 const TOKEN_KEY = "authToken";
 const USER_KEY = "user";
 
+function normalizeUser(user: Record<string, unknown>): Record<string, unknown> {
+  // Backend getProfileSummary() returns `fullName` instead of firstName/lastName.
+  // Split it so the frontend IUser shape is always consistent.
+  if (user.fullName && (!user.firstName || !user.lastName)) {
+    const parts = String(user.fullName).trim().split(" ");
+    user.firstName = parts[0] ?? "";
+    user.lastName  = (parts.slice(1).join(" ") || parts[0]) ?? "";
+  }
+  return user;
+}
+
 function saveSession(data: IAuthResponse): void {
   if (data.token) localStorage.setItem(TOKEN_KEY, data.token);
-  if (data.user) localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+  if (data.user) {
+    const normalized = normalizeUser({ ...(data.user as Record<string, unknown>) });
+    localStorage.setItem(USER_KEY, JSON.stringify(normalized));
+    // Keep data.user in sync so callers get the normalized object too
+    (data as Record<string, unknown>).user = normalized;
+  }
 }
 
 function extractError(error: unknown): never {
@@ -84,7 +100,9 @@ class AuthService {
   getCurrentUser(): IUser | null {
     try {
       const raw = localStorage.getItem(USER_KEY);
-      return raw ? JSON.parse(raw) : null;
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return normalizeUser(parsed) as unknown as IUser;
     } catch {
       return null;
     }
