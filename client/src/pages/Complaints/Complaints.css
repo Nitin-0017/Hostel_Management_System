@@ -16,26 +16,26 @@
 .complaints-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #2F4156;
   margin: 0;
 }
 
 .raise-complaint-btn {
-  background: #2563eb;
-  color: white;
+  background: #567C8D;
+  color: #FFFFFF;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(86, 124, 141, 0.2);
 }
 
 .raise-complaint-btn:hover {
-  background: #1d4ed8;
+  background: #567C8D;
   transform: translateY(-1px);
-  box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 6px 8px -1px rgba(86, 124, 141, 0.3);
 }
 
 /* Filter Bar */
@@ -69,8 +69,8 @@
 }
 
 .filter-btn.active {
-  background: white;
-  color: #0f172a;
+  background: #C8D9E6;
+  color: #2F4156;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   font-weight: 600;
 }
@@ -92,8 +92,8 @@
 }
 
 .search-input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #567C8D;
+  box-shadow: 0 0 0 3px rgba(86, 124, 141, 0.1);
 }
 
 .search-icon {
@@ -141,14 +141,14 @@
 .card-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #2F4156;
   margin: 0;
   line-height: 1.4;
 }
 
 .card-category {
   font-size: 0.8rem;
-  color: #64748b;
+  color: #567C8D;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
@@ -277,8 +277,8 @@
 }
 
 .timeline-item.active .timeline-dot {
-  border-color: #3b82f6;
-  background: #3b82f6;
+  border-color: #567C8D;
+  background: #567C8D;
 }
 
 .timeline-content {
@@ -289,7 +289,7 @@
 .timeline-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #2F4156;
   margin: 0;
 }
 
@@ -334,7 +334,7 @@
 .modal-header h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #0f172a;
+  color: #2F4156;
 }
 
 .close-btn {
@@ -383,8 +383,8 @@
 
 .form-control:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #567C8D;
+  box-shadow: 0 0 0 3px rgba(86, 124, 141, 0.1);
 }
 
 textarea.form-control {
@@ -400,9 +400,9 @@ textarea.form-control {
 }
 
 .cancel-btn {
-  background: white;
-  border: 1px solid #cbd5e1;
-  color: #475569;
+  background: #F5EFEB;
+  border: 1px solid #C8D9E6;
+  color: #2F4156;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
@@ -413,13 +413,13 @@ textarea.form-control {
 .cancel-btn:hover {
   background: #f8fafc;
   border-color: #94a3b8;
-  color: #0f172a;
+  color: #2F4156;
 }
 
 .submit-btn {
-  background: #2563eb;
+  background: #567C8D;
   border: none;
-  color: white;
+  color: #FFFFFF;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
@@ -428,7 +428,7 @@ textarea.form-control {
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: #567C8D;
 }
 
 .submit-btn:disabled {

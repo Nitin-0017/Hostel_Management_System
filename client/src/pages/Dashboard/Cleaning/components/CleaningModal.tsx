@@ -48,7 +48,7 @@ const CleaningModal: React.FC<CleaningModalProps> = ({ isOpen, onClose, onSubmit
             className="btn-secondary" 
             onClick={onClose}
             disabled={isSubmitting}
-            style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', background: 'white', cursor: 'pointer' }}
+            style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: '1px solid #C8D9E6', background: '#F5EFEB', color: '#2F4156', cursor: 'pointer' }}
           >
             Cancel
           </button>
@@ -56,7 +56,7 @@ const CleaningModal: React.FC<CleaningModalProps> = ({ isOpen, onClose, onSubmit
             type="submit" 
             className="btn-primary" 
             disabled={isSubmitting}
-            style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: 'none', background: '#3b82f6', color: 'white', fontWeight: '600', cursor: 'pointer' }}
+            style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: 'none', background: '#567C8D', color: '#FFFFFF', fontWeight: '600', cursor: 'pointer' }}
           >
             {isSubmitting ? 'Submitting...' : 'Submit Request'}
           </button>

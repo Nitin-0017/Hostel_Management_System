@@ -14,6 +14,9 @@ import MyRoom from "./pages/MyRoom/MyRoom";
 import Complaints from "./pages/Complaints/Complaints";
 import Leave from "./pages/Leave/Leave";
 import Cleaning from "./pages/Dashboard/Cleaning/Cleaning";
+import Profile from "./pages/Profile/Profile";
+import Settings from "./pages/Settings/Settings";
+import Support from "./pages/Support/Support";
 
 import "./App.css";
 
@@ -101,6 +104,33 @@ function App() {
               element={
                 <ProtectedRoute requiredRole="STAFF">
                   <StaffDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/help"
+              element={
+                <ProtectedRoute>
+                  <Support />
                 </ProtectedRoute>
               }
             />

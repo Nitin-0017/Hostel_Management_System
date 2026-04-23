@@ -60,7 +60,7 @@ const Leave: React.FC = () => {
               ))
             ) : (
               <div className="leave-empty-state">
-                <Icon name="leave" size="xl" color="var(--color-text-light)" />
+                <Icon name="leave" size="xl" color="#567C8D" />
                 <h3>No Leave Requests Found</h3>
                 <p>
                   {filter === "ALL"

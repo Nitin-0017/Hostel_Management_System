@@ -5,6 +5,7 @@ import FilterBar from './components/FilterBar';
 import CleaningCard from './components/CleaningCard';
 import CleaningModal from './components/CleaningModal';
 import DashboardLayout from '../../../components/layout/DashboardLayout';
+import Icon from '../../../components/dashboard/Icon';
 import './Cleaning.css';
 
 const Cleaning: React.FC = () => {
@@ -42,28 +43,34 @@ const Cleaning: React.FC = () => {
           <p>Manage and track your room cleaning services</p>
         </div>
         <button className="request-btn" onClick={() => setIsModalOpen(true)}>
-          <span style={{ fontSize: '1.2rem' }}>+</span> Request Cleaning
+          <Icon name="zap" size="sm" /> Request Cleaning
         </button>
       </div>
 
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon pending">⏳</div>
-          <div className="stat-info">
+          <div className="stat-icon pending">
+            <Icon name="clock" color="#f59e0b" />
+          </div>
+          <div className="cleaning-stat-info">
             <h3>Pending</h3>
             <p>{loading ? <Skeleton width="40px" height="24px" /> : pendingCount}</p>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon completed">✨</div>
-          <div className="stat-info">
+          <div className="stat-icon completed">
+            <Icon name="check-circle" color="#10b981" />
+          </div>
+          <div className="cleaning-stat-info">
             <h3>Completed</h3>
             <p>{loading ? <Skeleton width="40px" height="24px" /> : completedCount}</p>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon time">📅</div>
-          <div className="stat-info">
+          <div className="stat-icon time">
+            <Icon name="calendar" color="#6366f1" />
+          </div>
+          <div className="cleaning-stat-info">
             <h3>Last Cleaned</h3>
             <p>{loading ? <Skeleton width="100px" height="24px" /> : calculateDaysAgo(lastCleaned?.completedAt)}</p>
           </div>

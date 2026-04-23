@@ -3,7 +3,7 @@
   max-width: 1200px;
   margin: 0 auto;
   font-family: 'Inter', sans-serif;
-  color: #1e293b;
+  color: #2F4156;
 }
 
 .cleaning-header {
@@ -16,18 +16,18 @@
 .cleaning-header h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #2F4156;
   margin: 0;
 }
 
 .cleaning-header p {
-  color: #64748b;
+  color: #567C8D;
   margin: 0.5rem 0 0;
 }
 
 .request-btn {
-  background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-  color: white;
+  background: #567C8D;
+  color: #FFFFFF;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -37,12 +37,12 @@
   align-items: center;
   gap: 0.5rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(86, 124, 141, 0.3);
 }
 
 .request-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px -2px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 6px 12px -2px rgba(86, 124, 141, 0.4);
 }
 
 .stats-grid {
@@ -93,7 +93,7 @@
   color: #4f46e5;
 }
 
-.stat-info h3 {
+.cleaning-stat-info h3 {
   font-size: 0.875rem;
   color: #64748b;
   margin: 0 0 0.25rem;
@@ -101,7 +101,7 @@
   letter-spacing: 0.05em;
 }
 
-.stat-info p {
+.cleaning-stat-info p {
   font-size: 1.5rem;
   font-weight: 700;
   color: #0f172a;
@@ -137,8 +137,8 @@
 }
 
 .filter-btn.active {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: #C8D9E6;
+  color: #2F4156;
   font-weight: 600;
 }
 
@@ -279,20 +279,20 @@
 }
 
 .timeline-step.active .step-dot {
-  border-color: #3b82f6;
-  color: #3b82f6;
-  background: #eff6ff;
+  border-color: #567C8D;
+  color: #567C8D;
+  background: #F5EFEB;
 }
 
 .timeline-step.active .step-label {
-  color: #0f172a;
+  color: #2F4156;
   font-weight: 600;
 }
 
 .timeline-step.completed .step-dot {
-  background: #3b82f6;
-  border-color: #3b82f6;
-  color: white;
+  background: #567C8D;
+  border-color: #567C8D;
+  color: #FFFFFF;
 }
 
 .timeline-step.completed ~ .timeline-step.completed::before,
@@ -303,7 +303,7 @@
   right: 100%;
   width: calc(100% - 32px);
   height: 2px;
-  background: #3b82f6;
+  background: #567C8D;
   z-index: -1;
 }
 
@@ -369,8 +369,8 @@
 
 .modal-form-group textarea:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #567C8D;
+  box-shadow: 0 0 0 3px rgba(86, 124, 141, 0.1);
 }
 
 .readonly-input {

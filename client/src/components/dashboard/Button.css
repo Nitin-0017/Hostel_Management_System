@@ -42,28 +42,29 @@
 
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-navy) 0%, #1a2a38 100%);
-  color: var(--color-white);
-  border-color: var(--color-navy);
+  background: #567C8D;
+  color: #FFFFFF;
+  border-color: #567C8D;
   box-shadow: var(--shadow-md);
 }
 
 .btn-primary:hover:not(.btn-disabled) {
-  background: linear-gradient(135deg, #1a2a38 0%, var(--color-navy) 100%);
+  background: #2F4156;
+  border-color: #2F4156;
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
 }
 
 .btn-secondary {
-  background: var(--color-white);
-  color: var(--color-navy);
-  border-color: var(--color-navy);
+  background: #F5EFEB;
+  color: #2F4156;
+  border-color: #C8D9E6;
 }
 
 .btn-secondary:hover:not(.btn-disabled) {
-  background: var(--color-gray-50);
-  border-color: var(--color-teal);
-  color: var(--color-teal);
+  background: #C8D9E6;
+  border-color: #567C8D;
+  color: #2F4156;
 }
 
 .btn-success {
@@ -94,14 +95,14 @@
 
 .btn-ghost {
   background: transparent;
-  color: var(--color-navy);
-  border-color: var(--color-gray-300);
+  color: #2F4156;
+  border-color: #C8D9E6;
 }
 
 .btn-ghost:hover:not(.btn-disabled) {
-  background: var(--color-gray-50);
-  border-color: var(--color-navy);
-  color: var(--color-teal);
+  background: #F5EFEB;
+  border-color: #567C8D;
+  color: #2F4156;
 }
 
 

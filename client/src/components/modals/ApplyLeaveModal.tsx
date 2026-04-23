@@ -84,7 +84,7 @@ const ApplyLeaveModal: React.FC<Props> = ({ isOpen, onClose, onSuccess }) => {
         </div>
 
         {daysCount > 0 && (
-          <div className="leave-duration-preview" style={{ padding: '12px', background: 'var(--color-background-alt)', borderRadius: '8px', fontSize: '0.95rem', marginBottom: '16px', color: 'var(--color-primary)', fontWeight: 500 }}>
+          <div className="leave-duration-preview" style={{ padding: '12px', background: 'var(--color-background-alt)', borderRadius: '8px', fontSize: '0.95rem', marginBottom: '16px', color: '#567C8D', fontWeight: 500 }}>
             Duration: {daysCount} {daysCount === 1 ? "day" : "days"}
           </div>
         )}

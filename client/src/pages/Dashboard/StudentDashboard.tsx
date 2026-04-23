@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { useDashboard } from "../../hooks/useDashboard";
 import DashboardLayout from "../../components/layout/DashboardLayout";
@@ -7,19 +8,12 @@ import Card from "../../components/dashboard/Card";
 import Button from "../../components/dashboard/Button";
 import Icon from "../../components/dashboard/Icon";
 import Skeleton from "../../components/ui/Skeleton";
-import SubmitComplaintModal from "../../components/modals/SubmitComplaintModal";
-import ApplyLeaveModal from "../../components/modals/ApplyLeaveModal";
-import RequestCleaningModal from "../../components/modals/RequestCleaningModal";
 import "./StudentDashboard.css";
 
 const StudentDashboard: React.FC = () => {
   const { user } = useAuth();
   const { data, isLoading, error, refresh } = useDashboard();
-
-  // Modal States
-  const [isComplaintModalOpen, setComplaintModalOpen] = useState(false);
-  const [isLeaveModalOpen, setLeaveModalOpen] = useState(false);
-  const [isCleaningModalOpen, setCleaningModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Derived data
   const room = data?.roomAllocation?.room;
@@ -74,28 +68,28 @@ const StudentDashboard: React.FC = () => {
               value={isLoading ? <Skeleton width="40px" height="32px" /> : pendingComplaints}
               icon={<Icon name="complaints" size="lg" />}
               color="warning"
-              onClick={() => {}}
+              onClick={() => navigate("/dashboard/student/complaints")}
             />
             <StatCard
               label="Leave Requests"
               value={isLoading ? <Skeleton width="40px" height="32px" /> : pendingLeaves}
               icon={<Icon name="leave" size="lg" />}
               color="info"
-              onClick={() => {}}
+              onClick={() => navigate("/dashboard/student/leave")}
             />
             <StatCard
               label="Room Occupancy"
               value={isLoading ? <Skeleton width="60px" height="32px" /> : room ? `${room.occupied}/${room.capacity}` : "N/A"}
               icon={<Icon name="room" size="lg" />}
               color="success"
-              onClick={() => {}}
+              onClick={() => navigate("/dashboard/student/room")}
             />
             <StatCard
               label="Cleaning Requests"
               value={isLoading ? <Skeleton width="40px" height="32px" /> : activeCleanings}
               icon={<Icon name="cleaning" size="lg" />}
               color="primary"
-              onClick={() => {}}
+              onClick={() => navigate("/dashboard/student/cleaning")}
             />
           </div>
         </section>
@@ -186,9 +180,9 @@ const StudentDashboard: React.FC = () => {
           <div className="grid-column grid-column-right">
             <Card icon={<Icon name="bolt" size="lg" color="var(--color-navy)" />} title="Quick Actions">
               <div className="quick-actions">
-                <Button label="Submit Complaint" icon={<Icon name="complaints" size="sm" />} fullWidth onClick={() => setComplaintModalOpen(true)} />
-                <Button label="Apply for Leave" icon={<Icon name="leave" size="sm" />} fullWidth onClick={() => setLeaveModalOpen(true)} />
-                <Button label="Request Cleaning" icon={<Icon name="cleaning" size="sm" />} fullWidth onClick={() => setCleaningModalOpen(true)} />
+                <Button label="Submit Complaint" icon={<Icon name="complaints" size="sm" />} fullWidth onClick={() => navigate("/dashboard/student/complaints")} />
+                <Button label="Apply for Leave" icon={<Icon name="leave" size="sm" />} fullWidth onClick={() => navigate("/dashboard/student/leave")} />
+                <Button label="Request Cleaning" icon={<Icon name="cleaning" size="sm" />} fullWidth onClick={() => navigate("/dashboard/student/cleaning")} />
               </div>
             </Card>
 
@@ -202,12 +196,6 @@ const StudentDashboard: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Modals */}
-      <SubmitComplaintModal isOpen={isComplaintModalOpen} onClose={() => setComplaintModalOpen(false)} onSuccess={refresh} />
-      <ApplyLeaveModal isOpen={isLeaveModalOpen} onClose={() => setLeaveModalOpen(false)} onSuccess={refresh} />
-      <RequestCleaningModal isOpen={isCleaningModalOpen} onClose={() => setCleaningModalOpen(false)} onSuccess={refresh} />
-
     </DashboardLayout>
   );
 };

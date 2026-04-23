@@ -14,12 +14,12 @@
 
 .leave-header h1 {
   font-size: 1.8rem;
-  color: var(--color-navy);
+  color: #2F4156;
   margin-bottom: 4px;
 }
 
 .leave-header p {
-  color: var(--color-text-light);
+  color: #567C8D;
   font-size: 1rem;
 }
 
@@ -44,16 +44,16 @@
   display: flex;
   gap: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #C8D9E6;
   overflow-x: auto;
 }
 
 .filter-btn {
   padding: 8px 16px;
   border-radius: 20px;
-  border: 1px solid var(--color-border);
-  background: var(--color-background);
-  color: var(--color-text);
+  border: 1px solid #C8D9E6;
+  background: #FFFFFF;
+  color: #2F4156;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -62,13 +62,13 @@
 }
 
 .filter-btn:hover {
-  background: var(--color-background-alt);
+  background: #F5EFEB;
 }
 
 .filter-btn.active {
-  background: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
+  background: #C8D9E6;
+  color: #2F4156;
+  border-color: #C8D9E6;
 }
 
 /* Leave List */
@@ -83,7 +83,7 @@
   background: white;
   border-radius: 12px;
   padding: 20px;
-  border: 1px solid var(--color-border);
+  border: 1px solid #C8D9E6;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
   cursor: pointer;
@@ -95,7 +95,7 @@
 .leave-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
-  border-color: var(--color-primary-light, #e0e7ff);
+  border-color: #C8D9E6;
 }
 
 .leave-card-header {
@@ -118,7 +118,7 @@
 .date-label {
   font-size: 0.75rem;
   text-transform: uppercase;
-  color: var(--color-text-light);
+  color: #567C8D;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -126,17 +126,17 @@
 .date-value {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--color-navy);
+  color: #2F4156;
 }
 
 .date-arrow {
-  color: var(--color-text-light);
+  color: #567C8D;
   font-size: 1.2rem;
 }
 
 .days-badge {
-  background: var(--color-background-alt);
-  color: var(--color-text);
+  background: #F5EFEB;
+  color: #2F4156;
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.85rem;
@@ -145,7 +145,7 @@
 }
 
 .leave-reason-preview .reason-text {
-  color: var(--color-text);
+  color: #2F4156;
   font-size: 0.95rem;
   line-height: 1.5;
   margin: 0;
@@ -156,18 +156,18 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 12px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid #C8D9E6;
 }
 
 .applied-ago {
   font-size: 0.85rem;
-  color: var(--color-text-light);
+  color: #567C8D;
 }
 
 .expand-btn {
   background: none;
   border: none;
-  color: var(--color-primary);
+  color: #567C8D;
   font-weight: 500;
   font-size: 0.9rem;
   cursor: pointer;
@@ -176,7 +176,7 @@
 }
 
 .expand-btn:hover {
-  background: var(--color-background-alt);
+  background: #F5EFEB;
 }
 
 /* Timeline */
@@ -189,7 +189,7 @@
 
 .timeline-title {
   font-size: 1rem;
-  color: var(--color-navy);
+  color: #2F4156;
   margin-bottom: 16px;
 }
 
@@ -222,8 +222,8 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--color-border);
-  color: var(--color-text-light);
+  background: #C8D9E6;
+  color: #567C8D;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -232,8 +232,8 @@
 }
 
 .timeline-step.completed .step-icon {
-  background: var(--color-primary);
-  color: white;
+  background: #567C8D;
+  color: #FFFFFF;
 }
 
 .step-content {
@@ -243,13 +243,13 @@
 .step-content h4 {
   font-size: 0.95rem;
   margin: 0 0 4px 0;
-  color: var(--color-text);
+  color: #2F4156;
 }
 
 .step-content p {
   font-size: 0.85rem;
   margin: 0;
-  color: var(--color-text-light);
+  color: #567C8D;
 }
 
 .admin-remarks {
@@ -257,15 +257,15 @@
   padding: 8px;
   background: white;
   border-radius: 4px;
-  border-left: 3px solid var(--color-primary);
-  color: var(--color-text) !important;
+  border-left: 3px solid #567C8D;
+  color: #2F4156 !important;
   font-style: italic;
 }
 
 .timeline-connector {
   width: 2px;
   height: 24px;
-  background: var(--color-border);
+  background: #C8D9E6;
   margin-left: 15px;
   margin-top: -24px;
   margin-bottom: 4px;
@@ -273,7 +273,7 @@
 }
 
 .timeline-connector.active {
-  background: var(--color-primary);
+  background: #567C8D;
 }
 
 /* Empty State */
@@ -282,7 +282,7 @@
   padding: 64px 24px;
   background: white;
   border-radius: 12px;
-  border: 1px dashed var(--color-border);
+  border: 1px dashed #C8D9E6;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -290,13 +290,13 @@
 }
 
 .leave-empty-state h3 {
-  color: var(--color-navy);
+  color: #2F4156;
   font-size: 1.25rem;
   margin: 0;
 }
 
 .leave-empty-state p {
-  color: var(--color-text-light);
+  color: #567C8D;
   margin: 0 0 8px 0;
 }
 
