@@ -24,7 +24,11 @@ export type IconName =
   | "check-circle"
   | "wrench"
   | "staff"
-  | "reports";
+  | "reports"
+  | "wifi"
+  | "bed"
+  | "book-open"
+  | "zap";
 
 interface IconProps {
   name: IconName;
@@ -139,6 +143,25 @@ const Icon: React.FC<IconProps> = ({
       <line x1="18" y1="20" x2="18" y2="10"></line>
       <line x1="12" y1="20" x2="12" y2="4"></line>
       <line x1="6" y1="20" x2="6" y2="14"></line>
+    </svg>`,
+    wifi: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+      <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+      <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+      <line x1="12" y1="20" x2="12.01" y2="20"></line>
+    </svg>`,
+    bed: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M2 4v16"></path>
+      <path d="M2 8h18a2 2 0 0 1 2 2v10"></path>
+      <path d="M2 17h20"></path>
+      <path d="M6 8v9"></path>
+    </svg>`,
+    "book-open": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+    </svg>`,
+    zap: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
     </svg>`,
   };
 

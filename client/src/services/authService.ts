@@ -26,10 +26,10 @@ function normalizeUser(user: Record<string, unknown>): Record<string, unknown> {
 function saveSession(data: IAuthResponse): void {
   if (data.token) localStorage.setItem(TOKEN_KEY, data.token);
   if (data.user) {
-    const normalized = normalizeUser({ ...(data.user as Record<string, unknown>) });
+    const normalized = normalizeUser({ ...(data.user as unknown as Record<string, unknown>) });
     localStorage.setItem(USER_KEY, JSON.stringify(normalized));
     // Keep data.user in sync so callers get the normalized object too
-    (data as Record<string, unknown>).user = normalized;
+    (data as unknown as Record<string, unknown>).user = normalized;
   }
 }
 

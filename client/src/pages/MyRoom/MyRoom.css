@@ -1,0 +1,236 @@
+.my-room-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.my-room-header {
+  margin-bottom: 32px;
+}
+
+.my-room-header h1 {
+  font-size: 1.75rem;
+  color: var(--color-navy);
+  margin-bottom: 8px;
+}
+
+.my-room-header p {
+  color: #64748b;
+}
+
+.my-room-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+.my-room-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (max-width: 992px) {
+  .my-room-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Common Card Styles */
+.room-section-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.room-section-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 16px;
+}
+
+.card-header h2 {
+  font-size: 1.25rem;
+  color: var(--color-navy);
+  font-weight: 600;
+  margin: 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px 0;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Roommates Styles */
+.roommate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.roommate-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
+}
+
+.roommate-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.roommate-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  color: var(--color-navy);
+}
+
+.roommate-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* Facilities Styles */
+.facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+}
+
+.facility-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 12px;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.facility-item:hover {
+  background-color: white;
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+}
+
+.facility-icon {
+  color: var(--color-primary);
+}
+
+.facility-item span {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-navy);
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-badge.open {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.status-badge.in_progress {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.status-badge.resolved {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.status-badge.pending {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.status-badge.completed {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+/* Complaints & Cleaning List */
+.item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+  background-color: white;
+  transition: border-color 0.2s;
+}
+
+.list-item:hover {
+  border-color: #cbd5e1;
+}
+
+.item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.item-title {
+  font-weight: 500;
+  color: var(--color-navy);
+  margin: 0;
+}
+
+.item-date {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.skeleton-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

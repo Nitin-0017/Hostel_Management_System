@@ -3,7 +3,7 @@ import "./StatCard.css";
 
 interface StatCardProps {
   label: string;
-  value: string | number;
+  value: string | number | React.ReactNode;
   icon: React.ReactNode;
   trend?: {
     value: number;
@@ -39,7 +39,7 @@ const StatCard: React.FC<StatCardProps> = ({
       </div>
 
       <div className="stat-body">
-        <p className="stat-value">{value}</p>
+        <div className="stat-value">{value}</div>
         <p className="stat-label">{label}</p>
       </div>
     </div>
