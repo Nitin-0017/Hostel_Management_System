@@ -12,6 +12,7 @@ import StudentDashboard from "./pages/Dashboard/StudentDashboard";
 import StaffDashboard from "./pages/Dashboard/StaffDashboard";
 import MyRoom from "./pages/MyRoom/MyRoom";
 import Complaints from "./pages/Complaints/Complaints";
+import Leave from "./pages/Leave/Leave";
 
 import "./App.css";
 
@@ -75,6 +76,14 @@ function App() {
               element={
                 <ProtectedRoute requiredRole="STUDENT">
                   <Complaints />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/student/leave"
+              element={
+                <ProtectedRoute requiredRole="STUDENT">
+                  <Leave />
                 </ProtectedRoute>
               }
             />

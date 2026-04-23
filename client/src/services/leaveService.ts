@@ -2,11 +2,16 @@ import apiClient from "../config/apiClient";
 
 export interface ILeaveResponse {
   id: string;
+  studentId: string;
+  approvedById: string | null;
   fromDate: string;
   toDate: string;
   reason: string;
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+  reviewedAt: string | null;
+  adminRemarks: string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface IApplyLeave {
