@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import type { ILeaveResponse } from "../../../services/leaveService";
 import LeaveTimeline from "./LeaveTimeline";
-import Icon from "../../../components/dashboard/Icon";
+
 
 interface LeaveCardProps {
   leave: ILeaveResponse;
