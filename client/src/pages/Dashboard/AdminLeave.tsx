@@ -29,7 +29,7 @@ const AdminLeave: React.FC = () => {
       const res = await adminService.getLeaves(1, 200);
       setLeaves(res.data);
     } catch (err: any) {
-      setError(err.message || "Failed to load leaves");
+      setError(err.response?.data?.message || err.message || "Failed to load leaves");
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ const AdminLeave: React.FC = () => {
       setRemarksText("Approved by admin");
       fetchLeaves();
     } catch (err: any) {
-      setError(err.message || "Action failed");
+      setError(err.response?.data?.message || err.message || "Action failed");
     } finally {
       setActing(false);
     }
