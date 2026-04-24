@@ -3,6 +3,8 @@ import AdminDashboardLayout from "../../components/layout/AdminDashboardLayout";
 import Icon from "../../components/dashboard/Icon";
 import adminService from "../../services/adminService";
 import type { IAdminReport } from "../../services/adminService";
+import ReportModal from "../../components/dashboard/reports/ReportModal";
+import ReportViewer from "../../components/dashboard/reports/ReportViewer";
 import "./AdminPages.css";
 
 const ANNOUNCEMENT_TYPES = [
@@ -24,14 +26,16 @@ const AdminAnnouncements: React.FC = () => {
   // Reports section
   const [reports, setReports] = useState<IAdminReport[]>([]);
   const [reportsLoading, setReportsLoading] = useState(true);
-  const [generatingType, setGeneratingType] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedReportType, setSelectedReportType] = useState<"OCCUPANCY" | "COMPLAINT" | "LEAVE" | null>(null);
+  const [viewingReport, setViewingReport] = useState<IAdminReport | null>(null);
 
   const fetchReports = useCallback(async () => {
     setReportsLoading(true);
     try {
       const data = await adminService.getReports();
       setReports(data);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to load reports:", err);
     } finally {
       setReportsLoading(false);
@@ -63,36 +67,33 @@ const AdminAnnouncements: React.FC = () => {
       showSuccess("Announcement broadcast to all users successfully!");
       setTitle("");
       setMessage("");
-    } catch (err: any) {
-      setError(err.message || "Failed to send announcement");
+    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setError((err as any).message || "Failed to send announcement");
     } finally {
       setSending(false);
     }
   };
 
-  const handleGenerateReport = async (reportType: "occupancy" | "complaints" | "leaves") => {
-    setGeneratingType(reportType);
-    try {
-      if (reportType === "occupancy") await adminService.generateOccupancyReport();
-      else if (reportType === "complaints") await adminService.generateComplaintReport();
-      else await adminService.generateLeaveReport();
-      showSuccess(`${reportType.charAt(0).toUpperCase() + reportType.slice(1)} report generated!`);
-      fetchReports();
-    } catch (err: any) {
-      setError(err.message || "Failed to generate report");
-    } finally {
-      setGeneratingType(null);
-    }
+  const handleGenerateClick = (type: "OCCUPANCY" | "COMPLAINT" | "LEAVE") => {
+    setSelectedReportType(type);
+    setIsModalOpen(true);
   };
 
-  const formatReportDate = (iso: string) =>
-    new Date(iso).toLocaleString("en-IN", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  const handleReportGenerated = () => {
+    setIsModalOpen(false);
+    showSuccess("Report generated successfully!");
+    fetchReports();
+  };
+
+  const formatReportDate = (iso: string) => {
+    const d = new Date(iso);
+    const day = d.getDate();
+    const month = d.toLocaleString('en-GB', { month: 'short' });
+    const year = d.getFullYear();
+    const time = d.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+    return `${day} ${month} ${year}, ${time}`;
+  };
 
   return (
     <AdminDashboardLayout>
@@ -187,37 +188,34 @@ const AdminAnnouncements: React.FC = () => {
           <div>
             <div className="form-card report-generate-card">
               <h3 className="form-title">
-                <Icon name="reports" size="sm" color="var(--color-navy)" />
+                <Icon name="activity" size="sm" color="var(--color-navy)" />
                 Generate Reports
               </h3>
               <p className="form-desc">Snapshot current data into a saved report.</p>
               <div className="report-buttons">
                 <button
                   className="report-gen-btn"
-                  onClick={() => handleGenerateReport("occupancy")}
-                  disabled={!!generatingType}
+                  onClick={() => handleGenerateClick("OCCUPANCY")}
                   style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
                 >
                   <Icon name="room" size="sm" color="var(--color-textSecondary)" />
-                  {generatingType === "occupancy" ? "Generating…" : "Occupancy Report"}
+                  Occupancy Report
                 </button>
                 <button
                   className="report-gen-btn"
-                  onClick={() => handleGenerateReport("complaints")}
-                  disabled={!!generatingType}
+                  onClick={() => handleGenerateClick("COMPLAINT")}
                   style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
                 >
-                  <Icon name="complaints" size="sm" color="var(--color-textSecondary)" />
-                  {generatingType === "complaints" ? "Generating…" : "Complaint Report"}
+                  <Icon name="help" size="sm" color="var(--color-textSecondary)" />
+                  Complaint Report
                 </button>
                 <button
                   className="report-gen-btn"
-                  onClick={() => handleGenerateReport("leaves")}
-                  disabled={!!generatingType}
+                  onClick={() => handleGenerateClick("LEAVE")}
                   style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
                 >
                   <Icon name="leave" size="sm" color="var(--color-textSecondary)" />
-                  {generatingType === "leaves" ? "Generating…" : "Leave Report"}
+                  Leave Report
                 </button>
               </div>
             </div>
@@ -240,15 +238,15 @@ const AdminAnnouncements: React.FC = () => {
                     .sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime())
                     .slice(0, 10)
                     .map((report) => (
-                      <div key={report.id} className="report-item">
+                      <div key={report.id} className="report-item" onClick={() => setViewingReport(report)} style={{ cursor: "pointer" }}>
                         <div className="report-icon" style={{ display: "flex", alignItems: "center" }}>
-                          <Icon name={report.type === "OCCUPANCY" ? "room" : report.type === "COMPLAINT" ? "complaints" : "leave"} size="md" color="var(--color-navy)" />
+                          <Icon name={report.type === "OCCUPANCY" ? "room" : report.type === "COMPLAINT" ? "help" : "leave"} size="md" color="var(--color-navy)" />
                         </div>
                         <div className="report-info">
                           <span className="report-title">{report.title}</span>
                           <span className="report-date">{formatReportDate(report.generatedAt)}</span>
                         </div>
-                        <span className={`status-chip chip-neutral`} style={{ fontSize: "0.72rem" }}>
+                        <span className="status-chip chip-neutral" style={{ fontSize: "0.72rem" }}>
                           {report.type}
                         </span>
                       </div>
@@ -259,6 +257,21 @@ const AdminAnnouncements: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {isModalOpen && selectedReportType && (
+        <ReportModal
+          type={selectedReportType}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={handleReportGenerated}
+        />
+      )}
+
+      {viewingReport && (
+        <ReportViewer
+          report={viewingReport}
+          onClose={() => setViewingReport(null)}
+        />
+      )}
 
       <style>{`
         .announcements-layout {

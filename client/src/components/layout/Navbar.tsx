@@ -2,6 +2,8 @@ import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import Icon from "../dashboard/Icon";
+import adminService from "../../services/adminService";
+import notificationService from "../../services/notificationService";
 import "./Navbar.css";
 
 const ROLE_LABELS: Record<string, string> = {
@@ -26,39 +28,90 @@ const Navbar: React.FC = () => {
   const [showProfile, setShowProfile] = useState(false);
 
 
-  const mockNotificationsTimestamp = useMemo(
-    () => ({
-      now: new Date().getTime(),
-    }),
-    []
-  );
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const [notifications] = useState<Notification[]>([
-    {
-      id: "1",
-      type: "info",
-      title: "Room Maintenance",
-      message: "Scheduled maintenance on your floor tomorrow",
-      timestamp: new Date(mockNotificationsTimestamp.now - 60000),
-      read: false,
-    },
-    {
-      id: "2",
-      type: "success",
-      title: "Fee Received",
-      message: "Your hostel fees have been confirmed",
-      timestamp: new Date(mockNotificationsTimestamp.now - 3600000),
-      read: true,
-    },
-    {
-      id: "3",
-      type: "warning",
-      title: "Leave Request Pending",
-      message: "Your leave request is awaiting approval",
-      timestamp: new Date(mockNotificationsTimestamp.now - 86400000),
-      read: false,
-    },
-  ]);
+  React.useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        if (user?.role === "ADMIN") {
+          // Admin sees open complaints and pending leaves as notifications
+          const [complaintsRes, leavesRes] = await Promise.all([
+            adminService.getComplaints(1, 20),
+            adminService.getLeaves(1, 20)
+          ]);
+          
+          const adminLastReadRaw = localStorage.getItem('admin_last_read');
+          const adminLastRead = adminLastReadRaw ? new Date(adminLastReadRaw) : new Date(0);
+
+          const combined: Notification[] = [];
+          
+          complaintsRes.data.forEach(c => {
+            if (c.status === "OPEN" || c.status === "IN_PROGRESS") {
+              const createdAt = new Date(c.createdAt);
+              combined.push({
+                id: `comp_${c.id}`,
+                type: "warning",
+                title: `New Complaint: ${c.category}`,
+                message: c.subject,
+                timestamp: createdAt,
+                read: createdAt <= adminLastRead
+              });
+            }
+          });
+          
+          leavesRes.data.forEach(l => {
+            if (l.status === "PENDING") {
+              const createdAt = new Date(l.createdAt);
+              combined.push({
+                id: `leave_${l.id}`,
+                type: "info",
+                title: "Leave Request",
+                message: "A student has requested leave",
+                timestamp: createdAt,
+                read: createdAt <= adminLastRead
+              });
+            }
+          });
+          
+          combined.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+          setNotifications(combined.slice(0, 10));
+        } else if (user) {
+          // Student and Staff use the notification service
+          const res = await notificationService.getMyNotifications(1, 10);
+          const mapped: Notification[] = res.data.map(n => ({
+            id: n.id,
+            type: n.type === "GENERAL" || n.type === "INFO" ? "info" : "warning",
+            title: n.title,
+            message: n.message,
+            timestamp: new Date(n.createdAt),
+            read: n.isRead
+          }));
+          setNotifications(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to fetch notifications:", err);
+      }
+    };
+
+    fetchNotifications();
+    // Refresh notifications periodically
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [user]);
+
+  const handleMarkAllRead = async () => {
+    if (user?.role === "ADMIN") {
+      localStorage.setItem('admin_last_read', new Date().toISOString());
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    } else if (user) {
+      try {
+        await notificationService.markAllRead();
+        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      } catch (err) {
+        console.error("Failed to mark all as read:", err);
+      }
+    }
+  };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -111,7 +164,7 @@ const Navbar: React.FC = () => {
                 <div className="notification-header">
                   <h3>Notifications</h3>
                   {unreadCount > 0 && (
-                    <button className="mark-read-btn">Mark all as read</button>
+                    <button className="mark-read-btn" onClick={handleMarkAllRead}>Mark all as read</button>
                   )}
                 </div>
                 <div className="notification-list">
