@@ -176,7 +176,7 @@ const AdminDashboard: React.FC = () => {
     setSendingAnnouncement(true);
     try {
       await adminService.sendNotification({
-        type: "ANNOUNCEMENT",
+        type: "GENERAL",
         title: announcementTitle.trim(),
         message: announcementMsg.trim(),
         broadcast: true,

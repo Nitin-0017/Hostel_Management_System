@@ -7,12 +7,15 @@ import leaveService from "../services/leaveService";
 import type { ILeaveResponse } from "../services/leaveService";
 import cleaningService from "../services/cleaningService";
 import type { ICleaningResponse } from "../services/cleaningService";
+import notificationService from "../services/notificationService";
+import type { INotification } from "../services/notificationService";
 
 export interface IDashboardData {
   roomAllocation: IRoomAllocationResponse | null;
   complaints: IComplaintResponse[];
   leaves: ILeaveResponse[];
   cleanings: ICleaningResponse[];
+  notifications: INotification[];
 }
 
 export function useDashboard() {
@@ -24,11 +27,12 @@ export function useDashboard() {
     setIsLoading(true);
     setError(null);
     try {
-      const [roomAllocation, complaints, leaves, cleanings] = await Promise.all([
+      const [roomAllocation, complaints, leaves, cleanings, notifResult] = await Promise.all([
         roomService.getMyRoom(),
         complaintService.getMyComplaints(),
         leaveService.getMyLeaves(),
         cleaningService.getMyCleaning(),
+        notificationService.getMyNotifications(1, 20),
       ]);
 
       setData({
@@ -36,6 +40,7 @@ export function useDashboard() {
         complaints,
         leaves,
         cleanings,
+        notifications: notifResult.data,
       });
     } catch (err: any) {
       setError(err.message || "Failed to load dashboard data");

@@ -6,16 +6,17 @@ import type { IAdminReport } from "../../services/adminService";
 import "./AdminPages.css";
 
 const ANNOUNCEMENT_TYPES = [
-  { value: "ANNOUNCEMENT", icon: "bell" as const, label: "Announcement" },
-  { value: "ALERT", icon: "activity" as const, label: "Alert" },
-  { value: "INFO", icon: "help" as const, label: "Info" },
-  { value: "REMINDER", icon: "calendar" as const, label: "Reminder" },
+  { value: "GENERAL", icon: "bell" as const, label: "General" },
+  { value: "FEE_REMINDER", icon: "activity" as const, label: "Fee Reminder" },
+  { value: "LEAVE_UPDATE", icon: "leave" as const, label: "Leave Update" },
+  { value: "COMPLAINT_UPDATE", icon: "complaints" as const, label: "Complaint Update" },
+  { value: "ROOM_ALLOCATION", icon: "room" as const, label: "Room Allocation" },
 ];
 
 const AdminAnnouncements: React.FC = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [type, setType] = useState("ANNOUNCEMENT");
+  const [type, setType] = useState("GENERAL");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);

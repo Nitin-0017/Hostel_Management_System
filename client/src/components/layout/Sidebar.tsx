@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import complaintService from "../../services/complaintService";
 import Icon from "../dashboard/Icon";
 import "./Sidebar.css";
 
@@ -26,6 +27,16 @@ const Sidebar: React.FC = () => {
   const location = useLocation();
   const { logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [openComplaints, setOpenComplaints] = useState(0);
+
+  React.useEffect(() => {
+    complaintService.getMyComplaints()
+      .then((complaints) => {
+        const pending = complaints.filter(c => c.status === "OPEN" || c.status === "IN_PROGRESS").length;
+        setOpenComplaints(pending);
+      })
+      .catch((err) => console.error("Failed to fetch complaints for badge:", err));
+  }, []);
 
   const sidebarItems: SidebarItem[] = [
     {
@@ -45,7 +56,7 @@ const Sidebar: React.FC = () => {
       label: "Complaints",
       iconName: "complaints",
       path: "/dashboard/student/complaints",
-      badge: 2,
+      badge: openComplaints > 0 ? openComplaints : undefined,
     },
     {
       id: "leave",

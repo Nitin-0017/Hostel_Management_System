@@ -20,6 +20,7 @@ const StudentDashboard: React.FC = () => {
   const complaints = data?.complaints || [];
   const leaves = data?.leaves || [];
   const cleanings = data?.cleanings || [];
+  const notifications = data?.notifications || [];
 
   const pendingComplaints = complaints.filter(c => c.status === "OPEN" || c.status === "IN_PROGRESS").length;
   const pendingLeaves = leaves.filter(l => l.status === "PENDING").length;
@@ -188,9 +189,41 @@ const StudentDashboard: React.FC = () => {
 
             <Card icon={<Icon name="bell" size="lg" color="var(--color-navy)" />} title="Latest Announcements">
               <div className="announcements-list">
-                <div className="empty-state">
-                  <p>No new announcements.</p>
-                </div>
+                {isLoading ? (
+                  [1, 2, 3].map(i => (
+                    <div className="activity-item" key={i}>
+                      <Skeleton width="100%" height="1.2rem" />
+                    </div>
+                  ))
+                ) : notifications.length > 0 ? (
+                  notifications.slice(0, 5).map((n) => (
+                    <div
+                      key={n.id}
+                      className="activity-item"
+                      style={{
+                        opacity: n.isRead ? 0.7 : 1,
+                        borderLeft: n.isRead ? "3px solid var(--color-teal)" : "3px solid var(--color-navy)",
+                      }}
+                    >
+                      <span className="activity-icon">
+                        <Icon name="bell" size="md" color={n.isRead ? "var(--color-teal)" : "var(--color-navy)"} />
+                      </span>
+                      <div className="activity-content">
+                        <p className="activity-title">{n.title}</p>
+                        <p className="activity-time" style={{ margin: "2px 0 0 0" }}>
+                          {n.message.length > 80 ? n.message.slice(0, 80) + "…" : n.message}
+                        </p>
+                        <p className="activity-time" style={{ fontSize: "0.7rem", marginTop: "4px" }}>
+                          {new Date(n.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="empty-state">
+                    <p>No new announcements.</p>
+                  </div>
+                )}
               </div>
             </Card>
           </div>
