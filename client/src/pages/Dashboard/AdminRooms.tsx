@@ -39,7 +39,7 @@ const AdminRooms: React.FC = () => {
       setRooms(r.data);
       setStudents(s.data);
     } catch (err: any) {
-      setError(err.message || "Failed to load rooms");
+      setError(err.response?.data?.message || err.message || "Failed to load rooms");
     } finally {
       setLoading(false);
     }
@@ -73,7 +73,7 @@ const AdminRooms: React.FC = () => {
       setShowCreateForm(false);
       fetchData();
     } catch (err: any) {
-      setError(err.message || "Failed to create room");
+      setError(err.response?.data?.message || err.message || "Failed to create room");
     } finally {
       setCreating(false);
     }
@@ -89,7 +89,7 @@ const AdminRooms: React.FC = () => {
       setAllocateStudentId("");
       fetchData();
     } catch (err: any) {
-      setError(err.message || "Failed to allocate room");
+      setError(err.response?.data?.message || err.message || "Failed to allocate room");
     } finally {
       setAllocating(false);
     }
@@ -102,7 +102,7 @@ const AdminRooms: React.FC = () => {
       showSuccess(`Room ${label} deleted.`);
       fetchData();
     } catch (err: any) {
-      setError(err.message || "Failed to delete room");
+      setError(err.response?.data?.message || err.message || "Failed to delete room");
     }
   };
 

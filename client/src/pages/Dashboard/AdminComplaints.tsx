@@ -144,7 +144,7 @@ const AdminComplaints: React.FC = () => {
           <div className="modal-overlay" onClick={() => setNoteModal(null)}>
             <div className="modal-card" onClick={(e) => e.stopPropagation()}>
               <h3 className="form-title">{noteModal.action === "resolve" ? "Resolve" : "Reject"} Complaint</h3>
-              <p style={{ fontSize: "0.88rem", color: "var(--color-textSecondary)", marginBottom: "0.75rem" }}>
+              <p style={{ fontSize: "0.88rem", color: "#333", marginBottom: "0.75rem" }}>
                 Regarding: <strong>{noteModal.title}</strong>
               </p>
               <textarea

@@ -77,12 +77,12 @@
   outline: none;
   font-size: 0.9rem;
   background: transparent;
-  color: var(--color-text, #1a1a2e);
+  color: #000;
   font-family: inherit;
 }
 
 .search-input::placeholder {
-  color: var(--color-textSecondary, #9ca3af);
+  color: #9ca3af;
 }
 
 /* Alert banners */
@@ -379,7 +379,7 @@
 .form-field label {
   font-size: 0.82rem;
   font-weight: 600;
-  color: var(--color-textSecondary, #6b7280);
+  color: #333;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -391,7 +391,7 @@
   font-size: 0.9rem;
   font-family: inherit;
   background: #fafafa;
-  color: var(--color-text, #1a1a2e);
+  color: #000;
   outline: none;
   transition: border-color 0.15s;
   width: 100%;
@@ -421,12 +421,21 @@
 
 .modal-card {
   background: #fff;
+  color: #000;
   border-radius: 16px;
   padding: 1.75rem;
   width: 100%;
   max-width: 460px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
   animation: modal-in 0.2s ease;
+}
+
+.modal-card h3,
+.modal-card p,
+.modal-card label,
+.modal-card select,
+.modal-card option {
+  color: #000;
 }
 
 @keyframes modal-in {

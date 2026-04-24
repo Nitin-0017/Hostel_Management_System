@@ -314,7 +314,7 @@ const AdminAnnouncements: React.FC = () => {
           font-family: inherit;
           text-align: left;
           transition: all 0.15s;
-          color: var(--color-text, #1a1a2e);
+          color: #000;
         }
         .report-gen-btn:hover:not(:disabled) {
           background: #2F4156;
@@ -339,8 +339,8 @@ const AdminAnnouncements: React.FC = () => {
           flex-direction: column;
           gap: 0.1rem;
         }
-        .report-title { font-size: 0.88rem; font-weight: 500; color: var(--color-text, #1a1a2e); }
-        .report-date { font-size: 0.75rem; color: var(--color-textSecondary, #6b7280); }
+        .report-title { font-size: 0.88rem; font-weight: 500; color: #000; }
+        .report-date { font-size: 0.75rem; color: #333; }
         .full-width { width: 100%; }
       `}</style>
     </AdminDashboardLayout>
