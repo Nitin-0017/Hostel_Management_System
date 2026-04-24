@@ -160,7 +160,7 @@
 
 .chart-bar-label {
   font-size: var(--font-size-xs);
-  color: var(--color-textSecondary);
+  color: #333;
   font-weight: 500;
 }
 
@@ -224,7 +224,7 @@
 }
 
 .legend-text {
-  color: var(--color-text);
+  color: #000;
   font-weight: 500;
 }
 
@@ -245,7 +245,7 @@
 
 .donut-label {
   font-size: var(--font-size-xs);
-  color: var(--color-textSecondary);
+  color: #333;
   margin-top: 2px;
 }
 
@@ -286,13 +286,13 @@
 .block-label {
   font-weight: 600;
   font-size: var(--font-size-sm);
-  color: var(--color-text);
+  color: #000;
   min-width: 70px;
 }
 
 .block-count {
   font-size: var(--font-size-xs);
-  color: var(--color-textSecondary);
+  color: #333;
   min-width: 70px;
   text-align: center;
 }
@@ -369,14 +369,14 @@
 
 .activity-title {
   margin: 0;
-  color: var(--color-text);
+  color: #000;
   font-size: var(--font-size-sm);
   font-weight: 600;
 }
 
 .activity-time {
   margin: 4px 0 0 0;
-  color: var(--color-textSecondary);
+  color: #333;
   font-size: var(--font-size-xs);
 }
 
@@ -440,13 +440,13 @@
   margin: 0;
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-text);
+  color: #000;
 }
 
 .approval-text small {
   margin: 0;
   font-size: var(--font-size-xs);
-  color: var(--color-textSecondary);
+  color: #333;
 }
 
 .approval-actions {
@@ -541,13 +541,13 @@
 
 .announcement-content p {
   margin: 0 0 var(--space-sm) 0;
-  color: var(--color-gray-700);
+  color: #222;
   font-size: var(--font-size-sm);
   line-height: 1.5;
 }
 
 .announcement-content small {
-  color: var(--color-gray-500);
+  color: #555;
   font-size: var(--font-size-xs);
 }
 
@@ -673,3 +673,12 @@
   padding: 20px;
   border-radius: 12px;
 }
+.admin-dashboard .stat-card .stat-value,
+.admin-dashboard .stat-card .stat-label,
+.admin-dashboard .card .card-title,
+.admin-dashboard .card .card-subtitle,
+.admin-dashboard .card .donut-total,
+.admin-dashboard .card .donut-label {
+  color: #000 !important;
+}
+
