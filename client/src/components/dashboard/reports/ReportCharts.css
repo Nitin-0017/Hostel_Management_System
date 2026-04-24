@@ -17,7 +17,7 @@
 .chart-box h4 {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: #000000;
   margin-bottom: 1.5rem;
   text-align: center;
 }

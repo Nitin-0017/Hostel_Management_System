@@ -31,7 +31,7 @@
   padding: 4rem;
   border-radius: 4px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  color: #1e293b;
+  color: #000000;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
@@ -61,7 +61,7 @@
 .doc-brand {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-navy);
+  color: #000000;
   margin: 0;
 }
 
@@ -72,7 +72,7 @@
 .doc-meta h2 {
   font-size: 2rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #000000;
   margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: -0.5px;
@@ -80,12 +80,12 @@
 
 .doc-meta p {
   font-size: 0.9rem;
-  color: #475569;
+  color: #000000;
   margin-bottom: 0.25rem;
 }
 
 .doc-meta strong {
-  color: #1e293b;
+  color: #000000;
 }
 
 .doc-divider {
@@ -102,7 +102,7 @@
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-navy);
+  color: #000000;
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #e2e8f0;
@@ -127,14 +127,14 @@
   font-size: 0.85rem;
   text-transform: uppercase;
   font-weight: 600;
-  color: #64748b;
+  color: #000000;
   margin-bottom: 0.5rem;
 }
 
 .kpi-value {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #000000;
 }
 
 .document-footer {
@@ -142,7 +142,7 @@
   padding-top: 2rem;
   border-top: 1px solid #e2e8f0;
   text-align: center;
-  color: #94a3b8;
+  color: #000000;
   font-size: 0.85rem;
 }
 

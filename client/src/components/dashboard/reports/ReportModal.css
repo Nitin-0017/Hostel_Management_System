@@ -33,7 +33,7 @@
 .modal-header h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: #000000;
   margin: 0;
 }
 
@@ -41,7 +41,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--color-textSecondary);
+  color: #000000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,7 +60,7 @@
 }
 
 .report-desc {
-  color: var(--color-textSecondary);
+  color: #000000;
   font-size: 0.95rem;
   margin-bottom: 1.5rem;
   line-height: 1.5;
@@ -74,7 +74,7 @@
   display: block;
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--color-text);
+  color: #000000;
   margin-bottom: 0.5rem;
 }
 
@@ -84,7 +84,7 @@
   border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 1rem;
-  color: var(--color-text);
+  color: #000000;
   background-color: white;
   outline: none;
   transition: border-color 0.2s;
@@ -104,7 +104,7 @@
 .filters-title {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--color-textSecondary);
+  color: #000000;
   margin-bottom: 0.5rem;
 }
 
@@ -120,7 +120,7 @@
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
-  color: var(--color-text);
+  color: #000000;
 }
 
 .modal-footer {

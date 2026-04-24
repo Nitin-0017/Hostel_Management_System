@@ -22,7 +22,7 @@
 .report-table th {
   background-color: #f8fafc;
   font-weight: 600;
-  color: var(--color-textSecondary);
+  color: #000000;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -33,13 +33,13 @@
 }
 
 .report-table td {
-  color: var(--color-text);
+  color: #000000;
   font-size: 0.95rem;
 }
 
 .text-center {
   text-align: center;
-  color: var(--color-textSecondary);
+  color: #000000;
   padding: 2rem !important;
 }
 
