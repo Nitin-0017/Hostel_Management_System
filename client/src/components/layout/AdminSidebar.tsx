@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import Icon from "../dashboard/Icon";
 import type { IconName } from "../dashboard/Icon";
+import adminService from "../../services/adminService";
 import "./AdminSidebar.css";
-
-
 
 interface SidebarItem {
   id: string;
@@ -20,89 +19,34 @@ interface SidebarGroup {
   items: SidebarItem[];
 }
 
-
-
-const adminNavGroups: SidebarGroup[] = [
+const buildNavGroups = (openComplaints: number, pendingLeaves: number): SidebarGroup[] => [
   {
     groupLabel: "Overview",
     items: [
-      {
-        id: "dashboard",
-        label: "Dashboard",
-        iconName: "dashboard",
-        path: "/dashboard/admin",
-      },
-      {
-        id: "reports",
-        label: "Reports",
-        iconName: "reports",
-        path: "/dashboard/admin/reports",
-      },
+      { id: "dashboard",  label: "Dashboard",    iconName: "dashboard", path: "/dashboard/admin" },
+      { id: "announcements", label: "Announcements", iconName: "bell",  path: "/dashboard/admin/announcements" },
     ],
   },
   {
     groupLabel: "Management",
     items: [
-      {
-        id: "students",
-        label: "Students",
-        iconName: "users",
-        path: "/dashboard/admin/students",
-      },
-      {
-        id: "rooms",
-        label: "Rooms",
-        iconName: "room",
-        path: "/dashboard/admin/rooms",
-      },
-      {
-        id: "fees",
-        label: "Fee Management",
-        iconName: "fees",
-        path: "/dashboard/admin/fees",
-      },
-      {
-        id: "staff",
-        label: "Staff",
-        iconName: "staff",
-        path: "/dashboard/admin/staff",
-      },
+      { id: "students", label: "Students",       iconName: "users",  path: "/dashboard/admin/students" },
+      { id: "rooms",    label: "Rooms",           iconName: "room",   path: "/dashboard/admin/rooms" },
     ],
   },
   {
     groupLabel: "Requests",
     items: [
-      {
-        id: "complaints",
-        label: "Complaints",
-        iconName: "complaints",
-        path: "/dashboard/admin/complaints",
-        badge: 7,
-      },
-      {
-        id: "leave",
-        label: "Leave Requests",
-        iconName: "leave",
-        path: "/dashboard/admin/leave",
-        badge: 3,
-      },
-      {
-        id: "announcements",
-        label: "Announcements",
-        iconName: "bell",
-        path: "/dashboard/admin/announcements",
-      },
+      { id: "complaints", label: "Complaints",     iconName: "complaints", path: "/dashboard/admin/complaints", badge: openComplaints || undefined },
+      { id: "leave",      label: "Leave Requests", iconName: "leave",      path: "/dashboard/admin/leave",      badge: pendingLeaves || undefined },
     ],
   },
   {
     groupLabel: "System",
     items: [
-      {
-        id: "settings",
-        label: "Settings",
-        iconName: "settings",
-        path: "/dashboard/admin/settings",
-      },
+      { id: "profile", label: "Profile", iconName: "user", path: "/profile" },
+      { id: "settings", label: "Settings", iconName: "settings", path: "/settings" },
+      { id: "support", label: "Help & Support", iconName: "help", path: "/help" },
     ],
   },
 ];
@@ -114,6 +58,29 @@ const AdminSidebar: React.FC = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [openComplaints, setOpenComplaints] = useState(0);
+  const [pendingLeaves, setPendingLeaves] = useState(0);
+
+  // Fetch live badge counts
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const [c, l] = await Promise.all([
+          adminService.getComplaints(1, 200),
+          adminService.getLeaves(1, 200),
+        ]);
+        setOpenComplaints(c.data.filter((x) => x.status === "OPEN").length);
+        setPendingLeaves(l.data.filter((x) => x.status === "PENDING").length);
+      } catch {
+        // silent — badges are optional
+      }
+    };
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 60_000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const navGroups = buildNavGroups(openComplaints, pendingLeaves);
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -154,7 +121,7 @@ const AdminSidebar: React.FC = () => {
 
 
       <nav className="sidebar-nav">
-        {adminNavGroups.map((group) => (
+        {navGroups.map((group) => (
           <div className="nav-group" key={group.groupLabel}>
             {!isCollapsed && (
               <span className="nav-group-label">{group.groupLabel}</span>

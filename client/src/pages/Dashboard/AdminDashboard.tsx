@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import AdminDashboardLayout from "../../components/layout/AdminDashboardLayout";
 import StatCard from "../../components/dashboard/StatCard";
@@ -20,197 +21,220 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import adminService from "../../services/adminService";
+import type {
+  IAdminStudent,
+  IAdminRoom,
+  IAdminComplaint,
+  IAdminLeave,
+} from "../../services/adminService";
 import "./AdminDashboard.css";
 
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const getOccupancyColor = (pct: number) => {
+  if (pct >= 85) return "var(--color-navy)";
+  if (pct >= 70) return "var(--color-teal)";
+  return "var(--color-success)";
+};
 
-interface BlockInfo {
-  block: string;
-  occupied: number;
-  total: number;
-}
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 
-interface ActivityItem {
-  icon: "bell" | "mail" | "complaints" | "check-circle" | "wrench" | "user" | "room" | "leave" | "cleaning" | "activity" | "bolt";
-  iconColor: string;
-  title: string;
-  time: string;
-}
-
-interface PendingApproval {
-  icon: "leave" | "room" | "user" | "mail" | "cleaning" | "complaints" | "check-circle" | "wrench" | "bell" | "activity" | "bolt";
-  iconColor: string;
-  name: string;
-  detail: string;
-}
-
-interface Announcement {
-  badge: string;
-  title: string;
-  body: string;
-  time: string;
-}
-
-interface OccupancyPoint {
-  month: string;
-  rate: number;
-}
-
-interface IntakePoint {
-  month: string;
-  students: number;
-}
-
-interface ComplaintSlice {
-  name: string;
-  value: number;
-  color: string;
-}
-
-
-
+// ── Component ────────────────────────────────────────────────────────────────
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
+  // ── State ────────────────────────────────────────────────────────────────
+  const [students, setStudents] = useState<IAdminStudent[]>([]);
+  const [rooms, setRooms] = useState<IAdminRoom[]>([]);
+  const [complaints, setComplaints] = useState<IAdminComplaint[]>([]);
+  const [leaves, setLeaves] = useState<IAdminLeave[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [actionError, setActionError] = useState<string | null>(null);
 
+  // Announcement form state
+  const [announcementTitle, setAnnouncementTitle] = useState("");
+  const [announcementMsg, setAnnouncementMsg] = useState("");
+  const [sendingAnnouncement, setSendingAnnouncement] = useState(false);
+  const [announcementSuccess, setAnnouncementSuccess] = useState(false);
 
-  const occupancyData: OccupancyPoint[] = [
-    { month: "Nov", rate: 68 },
-    { month: "Dec", rate: 74 },
-    { month: "Jan", rate: 80 },
-    { month: "Feb", rate: 77 },
-    { month: "Mar", rate: 85 },
-    { month: "Apr", rate: 82 },
-  ];
+  // ── Fetch all data ───────────────────────────────────────────────────────
+  const fetchAll = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [s, r, c, l] = await Promise.all([
+        adminService.getStudents(1, 200),
+        adminService.getRooms(1, 200),
+        adminService.getComplaints(1, 200),
+        adminService.getLeaves(1, 200),
+      ]);
+      setStudents(s.data);
+      setRooms(r.data);
+      setComplaints(c.data);
+      setLeaves(l.data);
+    } catch (err: any) {
+      console.error("Dashboard fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const complaintData: ComplaintSlice[] = [
-    { name: "Resolved", value: 18, color: "#10B981" },
-    { name: "In Progress", value: 9, color: "#F59E0B" },
-    { name: "Open", value: 7, color: "#EF4444" },
-    { name: "On Hold", value: 3, color: "#567C8D" },
-  ];
+  useEffect(() => {
+    fetchAll();
+  }, [fetchAll]);
 
-  const intakeData: IntakePoint[] = [
-    { month: "Nov", students: 12 },
-    { month: "Dec", students: 5 },
-    { month: "Jan", students: 28 },
-    { month: "Feb", students: 19 },
-    { month: "Mar", students: 23 },
-    { month: "Apr", students: 16 },
-  ];
+  // ── Derived stats ────────────────────────────────────────────────────────
+  const totalStudents = students.length;
+  const totalRooms = rooms.length;
+  const occupiedRooms = rooms.filter((r) => !r.isAvailable || r.occupied > 0).length;
+  const openComplaints = complaints.filter((c) => c.status === "OPEN").length;
+  const pendingLeaves = leaves.filter((l) => l.status === "PENDING");
 
-  const blockInfo: BlockInfo[] = [
-    { block: "Block A", occupied: 45, total: 50 },
-    { block: "Block B", occupied: 22, total: 25 },
-    { block: "Block C", occupied: 18, total: 25 },
-    { block: "Block D", occupied: 12, total: 20 },
-  ];
+  // Complaint pie data
+  const complaintPie = [
+    { name: "Resolved", value: complaints.filter((c) => c.status === "RESOLVED").length, color: "#10B981" },
+    { name: "In Progress", value: complaints.filter((c) => c.status === "IN_PROGRESS").length, color: "#F59E0B" },
+    { name: "Open", value: complaints.filter((c) => c.status === "OPEN").length, color: "#EF4444" },
+    { name: "Rejected", value: complaints.filter((c) => c.status === "REJECTED").length, color: "#567C8D" },
+  ].filter((s) => s.value > 0);
 
-  const activityItems: ActivityItem[] = [
-    {
-      icon: "user",
-      iconColor: "var(--color-success)",
-      title: "New student checked in — Room B-204",
-      time: "30 min ago",
-    },
-    {
-      icon: "mail",
-      iconColor: "var(--color-info)",
-      title: "Fee payment received — ₹12,000",
-      time: "1 hour ago",
-    },
-    {
-      icon: "complaints",
-      iconColor: "var(--color-warning)",
-      title: "Complaint raised — WiFi issue, Block A",
-      time: "2 hours ago",
-    },
-    {
-      icon: "check-circle",
-      iconColor: "var(--color-success)",
-      title: "Leave approved — Priya Sharma",
-      time: "3 hours ago",
-    },
-    {
-      icon: "wrench",
-      iconColor: "var(--color-warning)",
-      title: "Maintenance done — Room C-101",
-      time: "5 hours ago",
-    },
-    {
-      icon: "bell",
-      iconColor: "var(--color-info)",
-      title: "Announcement posted — Sports Day",
-      time: "1 day ago",
-    },
-  ];
+  // Room block breakdown grouped by building
+  const blockMap = rooms.reduce<Record<string, { occupied: number; total: number }>>((acc, room) => {
+    const key = room.building || "Other";
+    if (!acc[key]) acc[key] = { occupied: 0, total: 0 };
+    acc[key].total += 1;
+    if (room.occupied > 0 || !room.isAvailable) acc[key].occupied += 1;
+    return acc;
+  }, {});
 
-  const pendingApprovals: PendingApproval[] = [
-    {
-      icon: "leave",
-      iconColor: "var(--color-warning)",
-      name: "Rahul Mehta",
-      detail: "3-day leave request",
-    },
-    {
-      icon: "room",
-      iconColor: "var(--color-info)",
-      name: "Anita Singh",
-      detail: "Room transfer B-102 → C-205",
-    },
-    {
-      icon: "user",
-      iconColor: "var(--color-success)",
-      name: "Karan Patel",
-      detail: "Guest permission (1 day)",
-    },
-  ];
+  const blockInfo = Object.entries(blockMap).map(([block, info]) => ({ block, ...info }));
 
-  const announcements: Announcement[] = [
-    {
-      badge: "Important",
-      title: "Water Maintenance 15th–16th April",
-      body: "",
-      time: "2 days ago",
-    },
-    {
-      badge: "Event",
-      title: "Sports Day — Saturday 20th April",
-      body: "",
-      time: "5 days ago",
-    },
-    {
-      badge: "Notice",
-      title: "Fee deadline extended to 30th April",
-      body: "",
-      time: "1 week ago",
-    },
-  ];
+  // ── Derived chart data ───────────────────────────────────────────────────
+  // Generate last 6 months for labels
+  const last6Months = Array.from({ length: 6 }).map((_, i) => {
+    const d = new Date();
+    d.setMonth(d.getMonth() - (5 - i));
+    return {
+      monthName: d.toLocaleString("en-US", { month: "short" }),
+      year: d.getFullYear(),
+      month: d.getMonth(),
+      endOfMonth: new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59),
+    };
+  });
 
+  const intakeTrend = last6Months.map(({ monthName, year, month }) => {
+    const count = students.filter((s) => {
+      const d = new Date(s.user.createdAt || s.joiningDate || new Date());
+      return d.getFullYear() === year && d.getMonth() === month;
+    }).length;
+    return { month: monthName, students: count };
+  });
 
-  const getPercentage = (occupied: number, total: number): number => {
-    return Math.round((occupied / total) * 100);
+  const occupancyTrend = last6Months.map(({ monthName, endOfMonth }) => {
+    const capacityAtTime = rooms
+      .filter((r) => new Date(r.createdAt || new Date()) <= endOfMonth)
+      .reduce((sum, r) => sum + (r.capacity || 0), 0);
+
+    const occupiedCount = students.filter((s) => {
+      if (!s.roomAllocation) return false;
+      const d = new Date(s.user.createdAt || s.joiningDate || new Date());
+      return d <= endOfMonth;
+    }).length;
+
+    const rate = capacityAtTime > 0 ? Math.round((occupiedCount / capacityAtTime) * 100) : 0;
+    return { month: monthName, rate };
+  });
+
+  // ── Leave actions ─────────────────────────────────────────────────────────
+  const handleApproveLeave = async (id: string) => {
+    try {
+      await adminService.approveLeave(id, "Approved by admin");
+      fetchAll();
+    } catch (err: any) {
+      setActionError(err.message || "Failed to approve leave");
+    }
   };
 
-
-  const getOccupancyColor = (percentage: number): string => {
-    if (percentage >= 85) return "var(--color-navy)";
-    if (percentage >= 70) return "var(--color-teal)";
-    return "var(--color-success)";
+  const handleRejectLeave = async (id: string) => {
+    try {
+      await adminService.rejectLeave(id, "Rejected by admin");
+      fetchAll();
+    } catch (err: any) {
+      setActionError(err.message || "Failed to reject leave");
+    }
   };
 
+  // ── Announcement submit ───────────────────────────────────────────────────
+  const handlePostAnnouncement = async () => {
+    if (!announcementTitle.trim() || !announcementMsg.trim()) return;
+    setSendingAnnouncement(true);
+    try {
+      await adminService.sendNotification({
+        type: "ANNOUNCEMENT",
+        title: announcementTitle.trim(),
+        message: announcementMsg.trim(),
+        broadcast: true,
+      });
+      setAnnouncementTitle("");
+      setAnnouncementMsg("");
+      setAnnouncementSuccess(true);
+      setTimeout(() => setAnnouncementSuccess(false), 3000);
+    } catch (err: any) {
+      setActionError(err.message || "Failed to send announcement");
+    } finally {
+      setSendingAnnouncement(false);
+    }
+  };
 
+  // ── Skeleton loader ───────────────────────────────────────────────────────
+  const Skeleton = ({ width = "100%", height = "1.2rem" }: { width?: string; height?: string }) => (
+    <div
+      style={{
+        width,
+        height,
+        borderRadius: "6px",
+        background: "linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%)",
+        backgroundSize: "200% 100%",
+        animation: "shimmer 1.4s infinite",
+        display: "inline-block",
+      }}
+    />
+  );
 
   return (
     <AdminDashboardLayout>
       <div className="admin-dashboard">
-     
+        {/* Error banner */}
+        {actionError && (
+          <div
+            style={{
+              background: "#fef2f2",
+              border: "1px solid #fecaca",
+              color: "#dc2626",
+              padding: "0.75rem 1.25rem",
+              borderRadius: "8px",
+              marginBottom: "1rem",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <span>{actionError}</span>
+            <button onClick={() => setActionError(null)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem" }}>×</button>
+          </div>
+        )}
+
+        {/* Welcome Section */}
         <section className="welcome-section">
           <div className="welcome-header">
             <div>
-              <h1>
-                Welcome back, {user ? `${user.firstName}` : "Admin"}!
-              </h1>
+              <h1>Welcome back, {user ? `${user.firstName}` : "Admin"}!</h1>
               <p>Here's your hostel management overview</p>
             </div>
             <div className="welcome-right">
@@ -227,365 +251,349 @@ const AdminDashboard: React.FC = () => {
           </div>
         </section>
 
+        {/* Stats Section */}
         <section className="stats-section">
           <div className="stats-grid">
             <StatCard
               label="Total Students"
-              value="248"
+              value={loading ? <Skeleton width="60px" height="2rem" /> : totalStudents}
               icon={<Icon name="user" size="lg" />}
               color="primary"
-              trend={{ value: 12, direction: "up" }}
-              onClick={() => {}}
+              onClick={() => navigate("/dashboard/admin/students")}
             />
             <StatCard
               label="Rooms Occupied"
-              value="82/100"
+              value={loading ? <Skeleton width="80px" height="2rem" /> : `${occupiedRooms}/${totalRooms}`}
               icon={<Icon name="room" size="lg" />}
               color="success"
-              trend={{ value: 5, direction: "up" }}
-              onClick={() => {}}
+              onClick={() => navigate("/dashboard/admin/rooms")}
             />
             <StatCard
-              label="Fee Collected"
-              value="₹4.2L"
-              icon={<Icon name="mail" size="lg" />}
+              label="Pending Leaves"
+              value={loading ? <Skeleton width="40px" height="2rem" /> : pendingLeaves.length}
+              icon={<Icon name="leave" size="lg" />}
               color="info"
-              trend={{ value: 8, direction: "up" }}
-              onClick={() => {}}
+              onClick={() => navigate("/dashboard/admin/leave")}
             />
             <StatCard
               label="Open Complaints"
-              value="7"
+              value={loading ? <Skeleton width="40px" height="2rem" /> : openComplaints}
               icon={<Icon name="complaints" size="lg" />}
               color="warning"
-              trend={{ value: 3, direction: "up" }}
-              onClick={() => {}}
+              onClick={() => navigate("/dashboard/admin/complaints")}
             />
           </div>
         </section>
 
-
+        {/* Charts Row */}
         <section className="charts-row">
-
+          {/* Occupancy Trend */}
           <Card
             icon={<Icon name="room" size="lg" color="var(--color-navy)" />}
             title="Occupancy Trend"
-            subtitle="Last 6 months"
+            subtitle="Derived from allocations (last 6 mo)"
           >
             <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={occupancyData}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="var(--color-border)"
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="month"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "var(--color-textSecondary)" }}
-                />
-                <YAxis
-                  domain={[50, 100]}
-                  unit="%"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "var(--color-textSecondary)" }}
-                />
-                <Tooltip
-                  formatter={(value) => `${value}%`}
-                  contentStyle={{
-                    background: "white",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: "8px",
-                    fontSize: "12px",
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="rate"
-                  stroke="#2F4156"
-                  strokeWidth={2.5}
-                  dot={{ fill: "#2F4156", r: 4 }}
-                  activeDot={{ r: 6, fill: "#567C8D" }}
-                />
+              <LineChart data={occupancyTrend}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "var(--color-textSecondary)" }} />
+                <YAxis domain={[50, 100]} unit="%" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "var(--color-textSecondary)" }} />
+                <Tooltip formatter={(v) => `${v}%`} contentStyle={{ background: "white", border: "1px solid var(--color-border)", borderRadius: "8px", fontSize: "12px" }} />
+                <Line type="monotone" dataKey="rate" stroke="#2F4156" strokeWidth={2.5} dot={{ fill: "#2F4156", r: 4 }} activeDot={{ r: 6, fill: "#567C8D" }} />
               </LineChart>
             </ResponsiveContainer>
           </Card>
 
-
+          {/* Complaint Status Pie */}
           <Card
-            icon={
-              <Icon name="complaints" size="lg" color="var(--color-navy)" />
-            }
+            icon={<Icon name="complaints" size="lg" color="var(--color-navy)" />}
             title="Complaint Status"
-            subtitle="Current month"
+            subtitle={loading ? "Loading…" : `${complaints.length} total`}
           >
             <div className="chart-donut-wrapper">
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                   <Pie
-                    data={complaintData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={55}
-                    outerRadius={85}
-                    paddingAngle={3}
-                    dataKey="value"
+                    data={loading || complaintPie.length === 0 ? [{ name: "No data", value: 1, color: "#e5e7eb" }] : complaintPie}
+                    cx="50%" cy="50%"
+                    innerRadius={55} outerRadius={85}
+                    paddingAngle={3} dataKey="value"
                   >
-                    {complaintData.map((entry, i) => (
+                    {(loading || complaintPie.length === 0
+                      ? [{ color: "#e5e7eb" }]
+                      : complaintPie
+                    ).map((entry, i) => (
                       <Cell key={i} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip
-                    formatter={(value) => value}
-                    contentStyle={{
-                      background: "white",
-                      border: "1px solid var(--color-border)",
-                      borderRadius: "8px",
-                      fontSize: "12px",
-                    }}
-                  />
-                  <Legend
-                    iconType="circle"
-                    iconSize={8}
-                    formatter={(value) => (
-                      <span
-                        style={{
-                          fontSize: 12,
-                          color: "var(--color-text)",
-                        }}
-                      >
-                        {value}
-                      </span>
-                    )}
-                  />
+                  <Tooltip formatter={(v) => v} contentStyle={{ background: "white", border: "1px solid var(--color-border)", borderRadius: "8px", fontSize: "12px" }} />
+                  {!loading && complaintPie.length > 0 && (
+                    <Legend iconType="circle" iconSize={8} formatter={(value) => <span style={{ fontSize: 12, color: "var(--color-text)" }}>{value}</span>} />
+                  )}
                 </PieChart>
               </ResponsiveContainer>
               <div className="chart-donut-center">
-                <div className="donut-total">37</div>
+                <div className="donut-total">{loading ? "–" : complaints.length}</div>
                 <div className="donut-label">Total</div>
               </div>
             </div>
           </Card>
 
-
+          {/* Student Intake */}
           <Card
             icon={<Icon name="user" size="lg" color="var(--color-navy)" />}
             title="Student Intake"
-            subtitle="Monthly admissions"
+            subtitle="New registrations (last 6 mo)"
           >
             <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={intakeData}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="var(--color-border)"
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="month"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "var(--color-textSecondary)" }}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "var(--color-textSecondary)" }}
-                />
-                <Tooltip
-                  formatter={(value) => value}
-                  contentStyle={{
-                    background: "white",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: "8px",
-                    fontSize: "12px",
-                  }}
-                />
-                <Bar
-                  dataKey="students"
-                  fill="#2F4156"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={36}
-                />
+              <BarChart data={intakeTrend}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "var(--color-textSecondary)" }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "var(--color-textSecondary)" }} />
+                <Tooltip formatter={(v) => v} contentStyle={{ background: "white", border: "1px solid var(--color-border)", borderRadius: "8px", fontSize: "12px" }} />
+                <Bar dataKey="students" fill="#2F4156" radius={[4, 4, 0, 0]} maxBarSize={36} />
               </BarChart>
             </ResponsiveContainer>
           </Card>
         </section>
 
+        {/* Dashboard Grid */}
         <div className="dashboard-grid">
-
+          {/* Left column */}
           <div className="grid-column grid-column-left">
 
+            {/* Room Occupancy by Block */}
             <Card
               icon={<Icon name="room" size="lg" color="var(--color-navy)" />}
               title="Room Occupancy"
               subtitle="Block-wise breakdown"
             >
               <div className="room-occupancy">
-                {blockInfo.map((block) => {
-                  const percentage = getPercentage(block.occupied, block.total);
-                  const color = getOccupancyColor(percentage);
-                  return (
-                    <div key={block.block} className="block-row">
-                      <span className="block-label">{block.block}</span>
-                      <span className="block-count">
-                        {block.occupied}/{block.total}
-                      </span>
-                      <div className="block-bar-wrap">
-                        <div className="occupancy-bar">
-                          <div
-                            className="occupancy-fill"
-                            style={{
-                              width: `${percentage}%`,
-                              background: color,
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <span className="block-percent">{percentage}%</span>
+                {loading ? (
+                  [1, 2, 3].map((i) => (
+                    <div key={i} className="block-row">
+                      <Skeleton width="70px" />
+                      <Skeleton width="40px" />
+                      <div className="block-bar-wrap"><div className="occupancy-bar" /></div>
+                      <Skeleton width="35px" />
                     </div>
-                  );
-                })}
+                  ))
+                ) : blockInfo.length === 0 ? (
+                  <p style={{ color: "var(--color-textSecondary)", fontSize: "0.9rem" }}>No room data available.</p>
+                ) : (
+                  blockInfo.map(({ block, occupied, total }) => {
+                    const pct = total > 0 ? Math.round((occupied / total) * 100) : 0;
+                    return (
+                      <div key={block} className="block-row">
+                        <span className="block-label">{block}</span>
+                        <span className="block-count">{occupied}/{total}</span>
+                        <div className="block-bar-wrap">
+                          <div className="occupancy-bar">
+                            <div className="occupancy-fill" style={{ width: `${pct}%`, background: getOccupancyColor(pct) }} />
+                          </div>
+                        </div>
+                        <span className="block-percent">{pct}%</span>
+                      </div>
+                    );
+                  })
+                )}
               </div>
               <footer className="card-action-footer">
-                <Button label="Manage Rooms" variant="ghost" size="sm" />
+                <Button label="Manage Rooms" variant="ghost" size="sm" onClick={() => navigate("/dashboard/admin/rooms")} />
               </footer>
             </Card>
 
-
+            {/* Recent Complaints Preview */}
             <Card
-              icon={<Icon name="activity" size="lg" color="var(--color-navy)" />}
-              title="Recent Activity"
+              icon={<Icon name="complaints" size="lg" color="var(--color-navy)" />}
+              title="Recent Complaints"
+              subtitle="Latest 5"
             >
               <div className="activity-list">
-                {activityItems.map((item, index) => (
-                  <div key={index} className="activity-item">
-                    <span className="activity-icon">
-                      <Icon
-                        name={item.icon}
-                        size="md"
-                        color={item.iconColor}
-                      />
-                    </span>
-                    <div className="activity-content">
-                      <p className="activity-title">{item.title}</p>
-                      <p className="activity-time">{item.time}</p>
+                {loading ? (
+                  [1, 2, 3].map((i) => (
+                    <div key={i} className="activity-item">
+                      <Skeleton width="100%" height="1.4rem" />
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : complaints.length === 0 ? (
+                  <p style={{ color: "var(--color-textSecondary)", fontSize: "0.9rem" }}>No complaints yet.</p>
+                ) : (
+                  [...complaints]
+                    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                    .slice(0, 5)
+                    .map((c) => (
+                      <div key={c.id} className="activity-item">
+                        <span className="activity-icon">
+                          <Icon
+                            name="complaints"
+                            size="md"
+                            color={
+                              c.status === "OPEN" ? "var(--color-warning)"
+                                : c.status === "RESOLVED" ? "var(--color-success)"
+                                : "var(--color-info)"
+                            }
+                          />
+                        </span>
+                        <div className="activity-content">
+                          <p className="activity-title">{c.subject}</p>
+                          <p className="activity-time">
+                            {c.status} · {formatDate(c.createdAt)}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                )}
               </div>
+              <footer className="card-action-footer">
+                <Button label="Manage Complaints" variant="ghost" size="sm" onClick={() => navigate("/dashboard/admin/complaints")} />
+              </footer>
+            </Card>
+
+            {/* Announcement Composer */}
+            <Card
+              icon={<Icon name="bell" size="lg" color="var(--color-navy)" />}
+              title="Post Announcement"
+              subtitle="Broadcasts to all students and staff"
+            >
+              {announcementSuccess && (
+                <div style={{ background: "#ecfdf5", border: "1px solid #a7f3d0", color: "#065f46", padding: "0.75rem 1rem", borderRadius: "8px", marginBottom: "1rem", fontSize: "0.9rem" }}>
+                  ✅ Announcement sent successfully to all users!
+                </div>
+              )}
+              <div className="announcement-form">
+                <input
+                  id="announcement-title"
+                  className="announcement-input"
+                  type="text"
+                  placeholder="Title (e.g. Water Maintenance 15th April)"
+                  value={announcementTitle}
+                  onChange={(e) => setAnnouncementTitle(e.target.value)}
+                />
+                <textarea
+                  id="announcement-message"
+                  className="announcement-textarea"
+                  placeholder="Write your announcement message here…"
+                  rows={3}
+                  value={announcementMsg}
+                  onChange={(e) => setAnnouncementMsg(e.target.value)}
+                />
+                <Button
+                  label={sendingAnnouncement ? "Sending…" : "Broadcast to All"}
+                  fullWidth
+                  onClick={handlePostAnnouncement}
+                />
+              </div>
+              <footer className="card-action-footer" style={{ marginTop: "1rem" }}>
+                <Button label="View All Announcements" variant="ghost" size="sm" onClick={() => navigate("/dashboard/admin/announcements")} />
+              </footer>
             </Card>
           </div>
 
-
+          {/* Right column */}
           <div className="grid-column grid-column-right">
 
-            <Card
-              icon={<Icon name="bolt" size="lg" color="var(--color-navy)" />}
-              title="Quick Actions"
-            >
+            {/* Quick Actions */}
+            <Card icon={<Icon name="bolt" size="lg" color="var(--color-navy)" />} title="Quick Actions">
               <div className="quick-actions">
-                <Button
-                  label="Add New Student"
-                  icon={<Icon name="user" size="sm" />}
-                  fullWidth
-                />
-                <Button
-                  label="Allocate Room"
-                  icon={<Icon name="room" size="sm" />}
-                  fullWidth
-                />
-                <Button
-                  label="Record Fee Payment"
-                  icon={<Icon name="mail" size="sm" />}
-                  fullWidth
-                />
-                <Button
-                  label="Post Announcement"
-                  icon={<Icon name="bell" size="sm" />}
-                  fullWidth
-                />
+                <Button label="Manage Students" icon={<Icon name="user" size="sm" />} fullWidth onClick={() => navigate("/dashboard/admin/students")} />
+                <Button label="Manage Rooms" icon={<Icon name="room" size="sm" />} fullWidth onClick={() => navigate("/dashboard/admin/rooms")} />
+                <Button label="Manage Complaints" icon={<Icon name="complaints" size="sm" />} fullWidth onClick={() => navigate("/dashboard/admin/complaints")} />
+                <Button label="Post Announcement" icon={<Icon name="bell" size="sm" />} fullWidth onClick={() => navigate("/dashboard/admin/announcements")} />
               </div>
             </Card>
 
-
+            {/* Pending Leave Approvals */}
             <Card
               icon={<Icon name="leave" size="lg" color="var(--color-navy)" />}
-              title="Pending Approvals"
-              subtitle="Requires your action"
+              title="Pending Leave Approvals"
+              subtitle={loading ? "Loading…" : `${pendingLeaves.length} pending`}
             >
               <div className="approvals-list">
-                {pendingApprovals.map((approval, index) => (
-                  <div key={index} className="approval-item">
-                    <div className="approval-info">
-                      <span className="approval-icon">
-                        <Icon
-                          name={approval.icon}
-                          size="md"
-                          color={approval.iconColor}
-                        />
-                      </span>
-                      <div className="approval-text">
-                        <p>{approval.name}</p>
-                        <small>{approval.detail}</small>
+                {loading ? (
+                  [1, 2, 3].map((i) => (
+                    <div key={i} className="approval-item">
+                      <Skeleton width="100%" height="2.5rem" />
+                    </div>
+                  ))
+                ) : pendingLeaves.length === 0 ? (
+                  <p style={{ color: "var(--color-textSecondary)", fontSize: "0.9rem", padding: "0.5rem 0" }}>
+                    No pending leave requests.
+                  </p>
+                ) : (
+                  pendingLeaves.slice(0, 5).map((leave) => {
+                    const name = leave.student
+                      ? `${leave.student.user.firstName} ${leave.student.user.lastName}`
+                      : leave.studentId.slice(0, 8) + "…";
+                    const from = formatDate(leave.fromDate);
+                    const to = formatDate(leave.toDate);
+                    return (
+                      <div key={leave.id} className="approval-item">
+                        <div className="approval-info">
+                          <span className="approval-icon">
+                            <Icon name="leave" size="md" color="var(--color-warning)" />
+                          </span>
+                          <div className="approval-text">
+                            <p>{name}</p>
+                            <small>{from} → {to}</small>
+                          </div>
+                        </div>
+                        <div className="approval-actions">
+                          <Button
+                            label="Reject"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRejectLeave(leave.id)}
+                          />
+                          <Button
+                            label="Approve"
+                            variant="primary"
+                            size="sm"
+                            onClick={() => handleApproveLeave(leave.id)}
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div className="approval-actions">
-                      <Button
-                        label="Reject"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {}}
-                      />
-                      <Button
-                        label="Approve"
-                        variant="primary"
-                        size="sm"
-                        onClick={() => {}}
-                      />
-                    </div>
-                  </div>
-                ))}
+                    );
+                  })
+                )}
               </div>
               <footer className="card-action-footer">
-                <Button
-                  label="View All Requests"
-                  variant="ghost"
-                  size="sm"
-                />
+                <Button label="View All Leave Requests" variant="ghost" size="sm" onClick={() => navigate("/dashboard/admin/leave")} />
               </footer>
             </Card>
           </div>
         </div>
 
-
-        <section className="announcements-section">
-          <Card
-            icon={<Icon name="bell" size="lg" color="var(--color-navy)" />}
-            title="Manage Announcements"
-          >
-            <div className="announcements-list">
-              {announcements.map((announcement, index) => (
-                <div key={index} className="announcement-item">
-                  <span className="announcement-badge">
-                    {announcement.badge}
-                  </span>
-                  <div className="announcement-content">
-                    <h4>{announcement.title}</h4>
-                    {announcement.body && <p>{announcement.body}</p>}
-                    <small>{announcement.time}</small>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <Button
-              label="Post New Announcement"
-              fullWidth
-              onClick={() => {}}
-            />
-          </Card>
-        </section>
+        <style>{`
+          @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+          .announcement-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+          }
+          .announcement-input,
+          .announcement-textarea {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            border: 1px solid var(--color-border, #e5e7eb);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: #fafafa;
+            color: var(--color-text, #1a1a2e);
+            outline: none;
+            resize: vertical;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+          }
+          .announcement-input:focus,
+          .announcement-textarea:focus {
+            border-color: var(--color-navy, #2F4156);
+          }
+        `}</style>
       </div>
     </AdminDashboardLayout>
   );

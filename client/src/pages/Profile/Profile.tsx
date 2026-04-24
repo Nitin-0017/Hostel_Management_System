@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
+import AdminDashboardLayout from '../../components/layout/AdminDashboardLayout';
+import { useAuth } from '../../hooks/useAuth';
 import ProfileHeader from './components/ProfileHeader';
 import ProfileDetails from './components/ProfileDetails';
 import EditProfileModal from './components/EditProfileModal';
@@ -9,15 +11,18 @@ import './Profile.css';
 import type { IUser } from '../../types';
 
 const Profile: React.FC = () => {
+  const { user: authUser } = useAuth();
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { showToast } = useToast();
 
+  const Layout = authUser?.role === 'ADMIN' ? AdminDashboardLayout : DashboardLayout;
+
   const fetchProfile = async () => {
     try {
       setIsLoading(true);
-      const data = await userService.getProfile();
+      const data = authUser?.role === 'ADMIN' ? await userService.getMe() : await userService.getProfile();
       setUser(data);
     } catch (error: any) {
       showToast(error.message || 'Failed to load profile', 'error');
@@ -32,7 +37,9 @@ const Profile: React.FC = () => {
 
   const handleUpdateProfile = async (data: { firstName: string; lastName: string; phone: string }) => {
     try {
-      const updatedUser = await userService.updateProfile(data);
+      const updatedUser = authUser?.role === 'ADMIN' 
+        ? await userService.updateUser(data) 
+        : await userService.updateProfile(data);
       setUser(updatedUser);
       showToast('Profile updated successfully!', 'success');
       
@@ -49,7 +56,7 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <DashboardLayout>
+    <Layout>
       <div className="profile-container">
         {isLoading ? (
           <>
@@ -81,7 +88,7 @@ const Profile: React.FC = () => {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    </Layout>
   );
 };
 

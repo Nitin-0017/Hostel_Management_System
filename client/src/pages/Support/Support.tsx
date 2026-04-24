@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
+import AdminDashboardLayout from "../../components/layout/AdminDashboardLayout";
+import { useAuth } from "../../hooks/useAuth";
 import SupportForm from "./components/SupportForm";
 import TicketList from "./components/TicketList";
 import supportService from "../../services/supportService";
@@ -7,8 +9,11 @@ import type { ISupportTicket } from "../../services/supportService";
 import "./Support.css";
 
 const Support: React.FC = () => {
+  const { user } = useAuth();
   const [tickets, setTickets] = useState<ISupportTicket[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const Layout = user?.role === "ADMIN" ? AdminDashboardLayout : DashboardLayout;
 
   const fetchTickets = useCallback(async () => {
     setLoading(true);
@@ -27,7 +32,7 @@ const Support: React.FC = () => {
   }, [fetchTickets]);
 
   return (
-    <DashboardLayout>
+    <Layout>
       <div className="support-page">
         <header className="support-header">
           <div>
@@ -45,7 +50,7 @@ const Support: React.FC = () => {
           </aside>
         </div>
       </div>
-    </DashboardLayout>
+    </Layout>
   );
 };
 

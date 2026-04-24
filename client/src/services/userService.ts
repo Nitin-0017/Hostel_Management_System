@@ -33,7 +33,7 @@ class UserService {
     return normalizeUser(res.data.data);
   }
 
-  async updateUser(data: { firstName?: string; lastName?: string }): Promise<IUser> {
+  async updateUser(data: { firstName?: string; lastName?: string; phone?: string }): Promise<IUser> {
     const res = await apiClient.put<{ success: boolean; data: any }>("/users/update", data);
     return normalizeUser(res.data.data);
   }

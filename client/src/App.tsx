@@ -8,6 +8,11 @@ import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
+import AdminStudents from "./pages/Dashboard/AdminStudents";
+import AdminRooms from "./pages/Dashboard/AdminRooms";
+import AdminComplaints from "./pages/Dashboard/AdminComplaints";
+import AdminLeave from "./pages/Dashboard/AdminLeave";
+import AdminAnnouncements from "./pages/Dashboard/AdminAnnouncements";
 import StudentDashboard from "./pages/Dashboard/StudentDashboard";
 import StaffDashboard from "./pages/Dashboard/StaffDashboard";
 import MyRoom from "./pages/MyRoom/MyRoom";
@@ -56,6 +61,46 @@ function App() {
               element={
                 <ProtectedRoute requiredRole="ADMIN">
                   <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin/students"
+              element={
+                <ProtectedRoute requiredRole="ADMIN">
+                  <AdminStudents />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin/rooms"
+              element={
+                <ProtectedRoute requiredRole="ADMIN">
+                  <AdminRooms />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin/complaints"
+              element={
+                <ProtectedRoute requiredRole="ADMIN">
+                  <AdminComplaints />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin/leave"
+              element={
+                <ProtectedRoute requiredRole="ADMIN">
+                  <AdminLeave />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin/announcements"
+              element={
+                <ProtectedRoute requiredRole="ADMIN">
+                  <AdminAnnouncements />
                 </ProtectedRoute>
               }
             />
