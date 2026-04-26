@@ -40,7 +40,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ user, onEdit }) => {
           </div>
           <Button 
             label="Edit Profile" 
-            variant="outline" 
+            variant="secondary" 
             size="sm" 
             icon={<Icon name="wrench" size="sm" />} 
             onClick={onEdit} 

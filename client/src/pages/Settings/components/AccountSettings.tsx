@@ -14,7 +14,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ user: initialUser, ro
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const { showToast } = useToast();
+  const { addToast: showToast } = useToast();
 
   useEffect(() => {
     if (initialUser) {

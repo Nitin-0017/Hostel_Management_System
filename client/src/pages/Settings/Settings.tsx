@@ -75,7 +75,7 @@ const Settings: React.FC = () => {
               className={`settings-nav-item ${activeTab === "security" ? "active" : ""}`}
               onClick={() => setActiveTab("security")}
             >
-              <Icon name="lock" size="sm" />
+              <Icon name="check-circle" size="sm" />
               Security
             </button>
             <button
