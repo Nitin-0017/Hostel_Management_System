@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only -r dotenv/config src/server.ts dotenv_config_path=.env",
-    "build": "npx prisma generate && tsc",
+    "build": "npx prisma generate && npx tsc",
     "postinstall": "npx prisma generate",
     "start": "node dist/server.js"
   },
