@@ -133,7 +133,7 @@ class AdminService {
     return res.data.data;
   }
 
-  async createRoom(payload: { roomNumber: string; floor: number; building: string; capacity: number; type: string }): Promise<IAdminRoom> {
+  async createRoom(payload: { roomNumber: string; floor: number; building: string; capacity: number; type: string; monthlyFee: number }): Promise<IAdminRoom> {
     const res = await apiClient.post<{ success: boolean; data: IAdminRoom }>("/admin/rooms", payload);
     return res.data.data;
   }

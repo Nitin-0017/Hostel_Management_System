@@ -21,7 +21,8 @@ const AdminRooms: React.FC = () => {
     building: "",
     floor: "",
     capacity: "",
-    type: "single",
+    type: "SINGLE",
+    monthlyFee: "",
   });
 
   // Allocate room modal
@@ -55,7 +56,7 @@ const AdminRooms: React.FC = () => {
   };
 
   const handleCreateRoom = async () => {
-    if (!newRoom.roomNumber || !newRoom.building || !newRoom.floor || !newRoom.capacity) {
+    if (!newRoom.roomNumber || !newRoom.building || !newRoom.floor || !newRoom.capacity || !newRoom.monthlyFee) {
       setError("All fields are required.");
       return;
     }
@@ -67,9 +68,10 @@ const AdminRooms: React.FC = () => {
         floor: Number(newRoom.floor),
         capacity: Number(newRoom.capacity),
         type: newRoom.type,
+        monthlyFee: Number(newRoom.monthlyFee),
       });
       showSuccess(`Room ${newRoom.building}-${newRoom.roomNumber} created.`);
-      setNewRoom({ roomNumber: "", building: "", floor: "", capacity: "", type: "single" });
+      setNewRoom({ roomNumber: "", building: "", floor: "", capacity: "", type: "SINGLE", monthlyFee: "" });
       setShowCreateForm(false);
       fetchData();
     } catch (err: any) {
@@ -164,10 +166,15 @@ const AdminRooms: React.FC = () => {
               <div className="form-field">
                 <label>Type</label>
                 <select className="form-input" value={newRoom.type} onChange={(e) => setNewRoom({ ...newRoom, type: e.target.value })}>
-                  <option value="single">Single</option>
-                  <option value="double">Double</option>
-                  <option value="triple">Triple</option>
+                  <option value="SINGLE">Single</option>
+                  <option value="DOUBLE">Double</option>
+                  <option value="TRIPLE">Triple</option>
+                  <option value="DORMITORY">Dormitory</option>
                 </select>
+              </div>
+              <div className="form-field">
+                <label>Monthly Fee (₹)</label>
+                <input className="form-input" type="number" placeholder="e.g. 5000" value={newRoom.monthlyFee} onChange={(e) => setNewRoom({ ...newRoom, monthlyFee: e.target.value })} />
               </div>
             </div>
             <div className="form-actions">

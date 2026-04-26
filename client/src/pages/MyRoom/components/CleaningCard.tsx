@@ -46,12 +46,17 @@ const CleaningCard: React.FC<CleaningCardProps> = ({ cleanings, isLoading, hasRo
           <div>
             <p style={{ margin: 0, fontSize: "0.85rem", color: "#64748b" }}>Latest Request</p>
             <p style={{ margin: "4px 0 0 0", fontWeight: 500, color: "var(--color-navy)" }}>
-              {new Date(latestCleaning.requestedAt).toLocaleDateString()}
+              {new Date(latestCleaning.requestedAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
             </p>
+            {latestCleaning.room?.roomNumber && (
+              <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "#64748b" }}>
+                Room {latestCleaning.room.roomNumber}
+              </p>
+            )}
           </div>
           <div>
             <span className={`status-badge ${latestCleaning.status.toLowerCase()}`}>
-              {latestCleaning.status}
+              {latestCleaning.status.replace("_", " ")}
             </span>
           </div>
         </div>

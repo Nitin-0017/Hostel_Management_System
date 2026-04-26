@@ -44,13 +44,13 @@ const Settings: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case "account":
-        return <AccountSettings user={user} />;
+        return <AccountSettings user={user} role={authUser?.role} />;
       case "security":
         return <SecuritySettings />;
       case "preferences":
         return <Preferences />;
       default:
-        return <AccountSettings user={user} />;
+        return <AccountSettings user={user} role={authUser?.role} />;
     }
   };
 

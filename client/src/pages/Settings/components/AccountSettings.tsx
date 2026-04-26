@@ -5,9 +5,10 @@ import type { IUser } from "../../../types";
 
 interface AccountSettingsProps {
   user: IUser | null;
+  role?: string;
 }
 
-const AccountSettings: React.FC<AccountSettingsProps> = ({ user: initialUser }) => {
+const AccountSettings: React.FC<AccountSettingsProps> = ({ user: initialUser, role }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,7 +30,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ user: initialUser }) 
     setSaved(false);
 
     try {
-      await userService.updateUser({ firstName, lastName });
+      await userService.updateUser({ firstName, lastName }, role);
       setSaved(true);
       showToast("Profile updated successfully", "success");
       

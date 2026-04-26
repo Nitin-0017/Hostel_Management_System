@@ -50,7 +50,7 @@ const MyRoom: React.FC = () => {
 
           {/* Side Column */}
           <div className="my-room-col">
-            <Roommates isLoading={isLoading} hasRoom={hasRoom} />
+            <Roommates isLoading={isLoading} hasRoom={hasRoom} room={room} />
             <CleaningCard 
               cleanings={cleanings} 
               isLoading={isLoading} 

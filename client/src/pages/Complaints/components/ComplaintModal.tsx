@@ -7,18 +7,18 @@ interface ComplaintModalProps {
   onSubmit: (data: ISubmitComplaint) => Promise<boolean>;
 }
 
-const CATEGORIES = [
-  "Electrical",
-  "Plumbing",
-  "Cleaning",
-  "Carpentry",
-  "Internet/Wi-Fi",
-  "Others"
+const CATEGORIES: { label: string; value: string }[] = [
+  { label: "Maintenance (Electrical, Plumbing, Carpentry)", value: "MAINTENANCE" },
+  { label: "Cleanliness",                                  value: "CLEANLINESS" },
+  { label: "Food",                                         value: "FOOD"        },
+  { label: "Security",                                     value: "SECURITY"    },
+  { label: "Noise",                                        value: "NOISE"       },
+  { label: "Others",                                       value: "OTHER"       },
 ];
 
 const ComplaintModal: React.FC<ComplaintModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [subject, setSubject] = useState("");
-  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [category, setCategory] = useState(CATEGORIES[0].value);
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -35,7 +35,7 @@ const ComplaintModal: React.FC<ComplaintModalProps> = ({ isOpen, onClose, onSubm
     if (success) {
       setSubject("");
       setDescription("");
-      setCategory(CATEGORIES[0]);
+      setCategory(CATEGORIES[0].value);
       onClose();
     }
   };
@@ -72,7 +72,7 @@ const ComplaintModal: React.FC<ComplaintModalProps> = ({ isOpen, onClose, onSubm
               required
             >
               {CATEGORIES.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
+                <option key={cat.value} value={cat.value}>{cat.label}</option>
               ))}
             </select>
           </div>

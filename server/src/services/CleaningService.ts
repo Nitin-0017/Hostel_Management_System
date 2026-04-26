@@ -52,8 +52,19 @@ export class CleaningService {
   }
 
   async getByStudent(studentId: string): Promise<CleaningRequest[]> {
-    const rows = await db.cleaningRequest.findMany({ where: { studentId }, include: { room: true }, orderBy: { createdAt: "desc" } });
-    return rows.map(toCleaning);
+    const rows = await db.cleaningRequest.findMany({
+      where: { studentId },
+      include: { room: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return rows.map(row => {
+      const c = toCleaning(row);
+      // Attach room relation so toJSON() callers can access roomNumber
+      (c as any)._room = (row as any).room ?? null;
+      const originalToJSON = c.toJSON.bind(c);
+      c.toJSON = () => ({ ...originalToJSON(), room: (c as any)._room });
+      return c;
+    });
   }
 
   async getByStaff(staffId: string): Promise<any[]> {

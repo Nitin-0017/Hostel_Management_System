@@ -16,7 +16,7 @@ const Profile: React.FC = () => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { showToast } = useToast();
+  const { addToast: showToast } = useToast();
 
   const Layout = authUser?.role === 'ADMIN' 
     ? AdminDashboardLayout 
@@ -27,7 +27,9 @@ const Profile: React.FC = () => {
   const fetchProfile = async () => {
     try {
       setIsLoading(true);
-      const data = authUser?.role === 'ADMIN' ? await userService.getMe() : await userService.getProfile();
+      const data = authUser?.role === 'ADMIN'
+        ? await userService.getMe()
+        : await userService.getProfile();
       setUser(data);
     } catch (error: any) {
       showToast(error.message || 'Failed to load profile', 'error');
@@ -42,8 +44,8 @@ const Profile: React.FC = () => {
 
   const handleUpdateProfile = async (data: { firstName: string; lastName: string; phone: string }) => {
     try {
-      const updatedUser = authUser?.role === 'ADMIN' 
-        ? await userService.updateUser(data) 
+      const updatedUser = authUser?.role === 'ADMIN' || authUser?.role === 'STAFF'
+        ? await userService.updateUser(data, authUser.role)
         : await userService.updateProfile(data);
       setUser(updatedUser);
       showToast('Profile updated successfully!', 'success');

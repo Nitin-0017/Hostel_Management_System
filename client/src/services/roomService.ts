@@ -2,14 +2,24 @@ import apiClient from "../config/apiClient";
 
 export interface IRoomAllocationResponse {
   id: string;
+  studentId: string;
+  roomId: string;
   status: string;
   allocatedAt: string;
+  vacatedAt?: string | null;
   room: {
+    id: string;
     roomNumber: string;
     floor: number;
     building: string;
     capacity: number;
     occupied: number;
+    type: string;
+    status: string;
+    monthlyFee: number;
+    amenities?: string | null;
+    createdAt: string;
+    updatedAt: string;
   };
 }
 
