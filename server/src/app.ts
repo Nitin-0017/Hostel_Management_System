@@ -6,6 +6,7 @@ const app: Application = express();
 
 const allowedOrigins = [
   process.env.CLIENT_URL || "http://localhost:5173",
+  "https://hostell-hubb.vercel.app",
 ];
 
 app.use(cors({
