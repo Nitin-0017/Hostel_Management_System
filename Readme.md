@@ -9,7 +9,7 @@
 
 Managing hostel operations manually is time-consuming and error-prone. Wardens often struggle with:
 
-- Room allocation  
+- Room allocations
 - Complaint handling  
 - Maintaining student records  
 
