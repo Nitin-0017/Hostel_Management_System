@@ -6,6 +6,7 @@ import { submitComplaint, getMyComplaints } from "../controllers/complaint.contr
 import { applyLeave, getMyLeaves, cancelLeave } from "../controllers/leave.controller";
 import { requestCleaning, getMyCleaning } from "../controllers/cleaning.controller";
 import { getMyNotifications, markRead, markAllRead } from "../controllers/notification.controller";
+import { getMyFees, getMyFeeSummary } from "../controllers/fee.controller";
 
 const router = Router();
 router.use(verifyToken, requireRole("STUDENT"));
@@ -27,5 +28,8 @@ router.get("/cleaning", getMyCleaning);
 router.get("/notifications", getMyNotifications);
 router.patch("/notifications/:id/read", markRead);
 router.patch("/notifications/read-all", markAllRead);
+
+router.get("/fees", getMyFees);
+router.get("/fees/summary", getMyFeeSummary);
 
 export default router;

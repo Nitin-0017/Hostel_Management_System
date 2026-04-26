@@ -23,6 +23,7 @@ import MyRoom from "./pages/MyRoom/MyRoom";
 import Complaints from "./pages/Complaints/Complaints";
 import Leave from "./pages/Leave/Leave";
 import Cleaning from "./pages/Dashboard/Cleaning/Cleaning";
+import Fees from "./pages/Fees/Fees";
 import Profile from "./pages/Profile/Profile";
 import Settings from "./pages/Settings/Settings";
 import Support from "./pages/Support/Support";
@@ -145,6 +146,14 @@ function App() {
               element={
                 <ProtectedRoute requiredRole="STUDENT">
                   <Cleaning />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/student/fees"
+              element={
+                <ProtectedRoute requiredRole="STUDENT">
+                  <Fees />
                 </ProtectedRoute>
               }
             />
