@@ -13,6 +13,8 @@ import AdminRooms from "./pages/Dashboard/AdminRooms";
 import AdminComplaints from "./pages/Dashboard/AdminComplaints";
 import AdminLeave from "./pages/Dashboard/AdminLeave";
 import AdminAnnouncements from "./pages/Dashboard/AdminAnnouncements";
+import AdminStaff from "./pages/Dashboard/AdminStaff";
+import AdminCleaning from "./pages/Dashboard/AdminCleaning";
 import StudentDashboard from "./pages/Dashboard/StudentDashboard";
 import StaffDashboard from "./pages/Dashboard/StaffDashboard";
 import StaffRooms from "./pages/Staff/Rooms/StaffRooms";
@@ -106,6 +108,22 @@ function App() {
               element={
                 <ProtectedRoute requiredRole="ADMIN">
                   <AdminAnnouncements />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin/staff"
+              element={
+                <ProtectedRoute requiredRole="ADMIN">
+                  <AdminStaff />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin/cleaning"
+              element={
+                <ProtectedRoute requiredRole="ADMIN">
+                  <AdminCleaning />
                 </ProtectedRoute>
               }
             />

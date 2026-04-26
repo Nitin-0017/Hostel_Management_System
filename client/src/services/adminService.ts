@@ -80,6 +80,49 @@ export interface IAdminLeave {
     enrollmentNumber: string;
   };
 }
+// ── Staff types ──────────────────────────────────────────────────────────────
+export interface IAdminStaff {
+  id: string;
+  userId: string;
+  employeeId: string;
+  designation: string;
+  department: string | null;
+  joiningDate: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    isActive: boolean;
+    createdAt: string;
+  };
+}
+
+// ── Cleaning types ───────────────────────────────────────────────────────────
+export interface IAdminCleaningRequest {
+  id: string;
+  studentId: string;
+  roomId: string;
+  assignedStaffId: string | null;
+  status: "PENDING" | "IN_PROGRESS" | "COMPLETED";
+  requestedAt: string;
+  scheduledAt: string | null;
+  completedAt: string | null;
+  notes: string | null;
+  student?: {
+    user: { firstName: string; lastName: string; email: string };
+    enrollmentNumber: string;
+  };
+  room?: {
+    roomNumber: string;
+    building?: string;
+  };
+  assignedStaff?: {
+    user: { firstName: string; lastName: string };
+    employeeId: string;
+  } | null;
+}
 
 // ── Report types ─────────────────────────────────────────────────────────────
 export interface IAdminReport {
@@ -120,6 +163,14 @@ class AdminService {
     await apiClient.delete(`/admin/students/${id}`);
   }
 
+  // Staff
+  async getStaff(page = 1, pageSize = 50): Promise<PaginatedResponse<IAdminStaff>> {
+    const res = await apiClient.get<{ success: boolean; data: IAdminStaff[]; total: number; page: number; pageSize: number }>(
+      `/admin/staff?page=${page}&pageSize=${pageSize}`
+    );
+    return { data: res.data.data, total: res.data.total, page: res.data.page, pageSize: res.data.pageSize };
+  }
+
   // Rooms
   async getRooms(page = 1, pageSize = 50): Promise<PaginatedResponse<IAdminRoom>> {
     const res = await apiClient.get<{ success: boolean; data: IAdminRoom[]; total: number; page: number; pageSize: number }>(
@@ -147,8 +198,8 @@ class AdminService {
     await apiClient.delete(`/admin/rooms/${id}`);
   }
 
-  async allocateRoom(studentId: string, roomId: string): Promise<unknown> {
-    const res = await apiClient.post<{ success: boolean; data: unknown }>("/admin/rooms/allocate", { studentId, roomId });
+  async allocateRoom(payload: { studentId?: string; staffId?: string; roomId: string }): Promise<unknown> {
+    const res = await apiClient.post<{ success: boolean; data: unknown }>("/admin/rooms/allocate", payload);
     return res.data.data;
   }
 
@@ -221,6 +272,19 @@ class AdminService {
 
   async generateLeaveReport(): Promise<IAdminReport> {
     const res = await apiClient.post<{ success: boolean; data: IAdminReport }>("/admin/reports/leaves");
+    return res.data.data;
+  }
+
+  // Cleaning
+  async getCleaningRequests(page = 1, pageSize = 50): Promise<PaginatedResponse<IAdminCleaningRequest>> {
+    const res = await apiClient.get<{ success: boolean; data: IAdminCleaningRequest[]; total: number; page: number; pageSize: number }>(
+      `/admin/cleaning?page=${page}&pageSize=${pageSize}`
+    );
+    return { data: res.data.data, total: res.data.total, page: res.data.page, pageSize: res.data.pageSize };
+  }
+
+  async assignCleaningRequest(id: string, staffId: string, scheduledAt?: string): Promise<unknown> {
+    const res = await apiClient.patch<{ success: boolean; data: unknown }>(`/admin/cleaning/${id}/assign`, { staffId, scheduledAt });
     return res.data.data;
   }
 }

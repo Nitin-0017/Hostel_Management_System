@@ -15,8 +15,11 @@ export const createRoomSchema = z.object({
 export const updateRoomSchema = createRoomSchema.partial();
 
 export const allocateRoomSchema = z.object({
-  studentId: z.string().min(1),
+  studentId: z.string().min(1).optional(),
+  staffId: z.string().min(1).optional(),
   roomId: z.string().min(1),
+}).refine(data => data.studentId || data.staffId, {
+  message: "Either studentId or staffId must be provided",
 });
 
 // ── Student ───────────────────────────────────────────────────────────────────

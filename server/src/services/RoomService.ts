@@ -93,6 +93,20 @@ export class RoomService {
     ]);
   }
 
+  async allocateStaff(staffId: string, roomId: string): Promise<any> {
+    const row = await db.room.findUnique({ where: { id: roomId } });
+    if (!row) throw new Error("Room not found.");
+
+    const existing = await db.staffRoomAssignment.findFirst({
+      where: { staffId, roomId, isActive: true },
+    });
+    if (existing) throw new Error("Staff already assigned to this room.");
+
+    return db.staffRoomAssignment.create({
+      data: { staffId, roomId, isActive: true },
+    });
+  }
+
   async getStudentRoom(studentId: string): Promise<any> {
     return db.roomAllocation.findFirst({
       where: { studentId, status: "ACTIVE" },

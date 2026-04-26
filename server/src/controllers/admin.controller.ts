@@ -59,3 +59,10 @@ export const getReports = async (req: Request, res: Response): Promise<void> => 
   const reports = await registry.report.getAll(req.user!.subId);
   res.json({ success: true, data: reports });
 };
+
+export const getAllStaff = async (req: Request, res: Response): Promise<void> => {
+  const page = Number(req.query.page) || 1;
+  const pageSize = Number(req.query.pageSize) || 10;
+  const result = await registry.staff.getAll({ page, pageSize });
+  res.json({ success: true, ...result });
+};

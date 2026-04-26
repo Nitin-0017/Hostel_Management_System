@@ -19,7 +19,7 @@ interface SidebarGroup {
   items: SidebarItem[];
 }
 
-const buildNavGroups = (openComplaints: number, pendingLeaves: number): SidebarGroup[] => [
+const buildNavGroups = (openComplaints: number, pendingLeaves: number, pendingCleaning: number): SidebarGroup[] => [
   {
     groupLabel: "Overview",
     items: [
@@ -31,6 +31,7 @@ const buildNavGroups = (openComplaints: number, pendingLeaves: number): SidebarG
     groupLabel: "Management",
     items: [
       { id: "students", label: "Students",       iconName: "users",  path: "/dashboard/admin/students" },
+      { id: "staff",    label: "Staff",            iconName: "user",   path: "/dashboard/admin/staff" },
       { id: "rooms",    label: "Rooms",           iconName: "room",   path: "/dashboard/admin/rooms" },
     ],
   },
@@ -39,6 +40,7 @@ const buildNavGroups = (openComplaints: number, pendingLeaves: number): SidebarG
     items: [
       { id: "complaints", label: "Complaints",     iconName: "complaints", path: "/dashboard/admin/complaints", badge: openComplaints || undefined },
       { id: "leave",      label: "Leave Requests", iconName: "leave",      path: "/dashboard/admin/leave",      badge: pendingLeaves || undefined },
+      { id: "cleaning",   label: "Cleaning",        iconName: "zap",        path: "/dashboard/admin/cleaning",   badge: pendingCleaning || undefined },
     ],
   },
   {
@@ -60,17 +62,20 @@ const AdminSidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [openComplaints, setOpenComplaints] = useState(0);
   const [pendingLeaves, setPendingLeaves] = useState(0);
+  const [pendingCleaning, setPendingCleaning] = useState(0);
 
   // Fetch live badge counts
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const [c, l] = await Promise.all([
+        const [c, l, cl] = await Promise.all([
           adminService.getComplaints(1, 200),
           adminService.getLeaves(1, 200),
+          adminService.getCleaningRequests(1, 200),
         ]);
         setOpenComplaints(c.data.filter((x) => x.status === "OPEN").length);
         setPendingLeaves(l.data.filter((x) => x.status === "PENDING").length);
+        setPendingCleaning(cl.data.filter((x: any) => x.status === "PENDING").length);
       } catch {
         // silent — badges are optional
       }
@@ -80,7 +85,7 @@ const AdminSidebar: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const navGroups = buildNavGroups(openComplaints, pendingLeaves);
+  const navGroups = buildNavGroups(openComplaints, pendingLeaves, pendingCleaning);
 
   const handleNavigation = (path: string) => {
     navigate(path);

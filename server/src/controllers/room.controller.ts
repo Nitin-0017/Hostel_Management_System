@@ -66,8 +66,14 @@ export const allocateRoom = async (req: Request, res: Response): Promise<void> =
     return;
   }
   try {
-    const allocation = await service.allocate(parsed.data.studentId, parsed.data.roomId);
-    res.status(201).json({ success: true, data: allocation });
+    const data = parsed.data;
+    if (data.staffId) {
+      const assignment = await service.allocateStaff(data.staffId, data.roomId);
+      res.status(201).json({ success: true, data: assignment });
+    } else {
+      const allocation = await service.allocate(data.studentId!, data.roomId);
+      res.status(201).json({ success: true, data: allocation });
+    }
   } catch (err: any) {
     res.status(400).json({ success: false, message: err.message });
   }

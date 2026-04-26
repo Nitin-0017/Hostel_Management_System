@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { verifyToken, requireRole } from "../middleware/authMiddleware";
-import { getAllStudents, getStudentById, updateStudent, removeStudent, generateOccupancyReport, generateComplaintReport, generateLeaveReport, getReports } from "../controllers/admin.controller";
+import { getAllStudents, getStudentById, updateStudent, removeStudent, generateOccupancyReport, generateComplaintReport, generateLeaveReport, getReports, getAllStaff } from "../controllers/admin.controller";
 import { createRoom, getAllRooms, getRoomById, updateRoom, deleteRoom, getAvailableRooms, allocateRoom, deallocateRoom } from "../controllers/room.controller";
 import { getAllComplaints, getComplaintById, resolveComplaint, rejectComplaint, markComplaintInProgress } from "../controllers/complaint.controller";
 import { getAllLeaves, approveLeave, rejectLeave } from "../controllers/leave.controller";
@@ -15,6 +15,9 @@ router.get("/students", getAllStudents);
 router.get("/students/:id", getStudentById);
 router.put("/students/:id", updateStudent);
 router.delete("/students/:id", removeStudent);
+
+// Staff
+router.get("/staff", getAllStaff);
 
 // Rooms
 router.post("/rooms", createRoom);

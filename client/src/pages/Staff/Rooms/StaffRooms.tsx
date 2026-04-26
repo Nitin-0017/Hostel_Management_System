@@ -10,8 +10,8 @@ const StaffRooms: React.FC = () => {
 
   const filtered = rooms.filter(
     (r) =>
-      r.roomNumber.toLowerCase().includes(search.toLowerCase()) ||
-      r.building.toLowerCase().includes(search.toLowerCase())
+      r.roomNumber?.toLowerCase().includes(search.toLowerCase()) ||
+      (r.building ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
   const occupancyPct = (room: typeof rooms[0]) =>
