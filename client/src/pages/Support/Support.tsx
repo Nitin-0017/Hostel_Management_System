@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import AdminDashboardLayout from "../../components/layout/AdminDashboardLayout";
+import StaffDashboardLayout from "../../components/layout/StaffDashboardLayout";
 import { useAuth } from "../../hooks/useAuth";
 import SupportForm from "./components/SupportForm";
 import TicketList from "./components/TicketList";
@@ -13,7 +14,11 @@ const Support: React.FC = () => {
   const [tickets, setTickets] = useState<ISupportTicket[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const Layout = user?.role === "ADMIN" ? AdminDashboardLayout : DashboardLayout;
+  const Layout = user?.role === "ADMIN" 
+    ? AdminDashboardLayout 
+    : user?.role === "STAFF" 
+      ? StaffDashboardLayout 
+      : DashboardLayout;
 
   const fetchTickets = useCallback(async () => {
     setLoading(true);

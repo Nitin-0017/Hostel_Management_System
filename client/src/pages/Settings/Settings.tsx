@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import AdminDashboardLayout from "../../components/layout/AdminDashboardLayout";
+import StaffDashboardLayout from "../../components/layout/StaffDashboardLayout";
 import AccountSettings from "./components/AccountSettings";
 import SecuritySettings from "./components/SecuritySettings";
 import Preferences from "./components/Preferences";
@@ -18,7 +19,11 @@ const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<SettingsTab>("account");
   const [loading, setLoading] = useState(false);
 
-  const Layout = authUser?.role === "ADMIN" ? AdminDashboardLayout : DashboardLayout;
+  const Layout = authUser?.role === "ADMIN" 
+    ? AdminDashboardLayout 
+    : authUser?.role === "STAFF" 
+      ? StaffDashboardLayout 
+      : DashboardLayout;
 
   useEffect(() => {
     const fetchUserData = async () => {

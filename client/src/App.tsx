@@ -15,6 +15,10 @@ import AdminLeave from "./pages/Dashboard/AdminLeave";
 import AdminAnnouncements from "./pages/Dashboard/AdminAnnouncements";
 import StudentDashboard from "./pages/Dashboard/StudentDashboard";
 import StaffDashboard from "./pages/Dashboard/StaffDashboard";
+import StaffRooms from "./pages/Staff/Rooms/StaffRooms";
+import StaffCleaning from "./pages/Staff/Cleaning/StaffCleaning";
+import StaffComplaints from "./pages/Staff/Complaints/StaffComplaints";
+import StaffProfile from "./pages/Staff/Profile/StaffProfile";
 import MyRoom from "./pages/MyRoom/MyRoom";
 import Complaints from "./pages/Complaints/Complaints";
 import Leave from "./pages/Leave/Leave";
@@ -149,6 +153,38 @@ function App() {
               element={
                 <ProtectedRoute requiredRole="STAFF">
                   <StaffDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/staff/rooms"
+              element={
+                <ProtectedRoute requiredRole="STAFF">
+                  <StaffRooms />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/staff/cleaning"
+              element={
+                <ProtectedRoute requiredRole="STAFF">
+                  <StaffCleaning />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/staff/complaints"
+              element={
+                <ProtectedRoute requiredRole="STAFF">
+                  <StaffComplaints />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/staff/profile"
+              element={
+                <ProtectedRoute requiredRole="STAFF">
+                  <StaffProfile />
                 </ProtectedRoute>
               }
             />

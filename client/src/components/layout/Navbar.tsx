@@ -4,6 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import Icon from "../dashboard/Icon";
 import adminService from "../../services/adminService";
 import notificationService from "../../services/notificationService";
+import staffService from "../../services/staffService";
 import "./Navbar.css";
 
 const ROLE_LABELS: Record<string, string> = {
@@ -75,8 +76,18 @@ const Navbar: React.FC = () => {
           
           combined.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
           setNotifications(combined.slice(0, 10));
+        } else if (user?.role === "STAFF") {
+          const res = await staffService.getNotifications(1, 10);
+          const mapped: Notification[] = res.data.map(n => ({
+            id: n.id,
+            type: n.type === "GENERAL" || n.type === "INFO" ? "info" : "warning",
+            title: n.title,
+            message: n.message,
+            timestamp: new Date(n.createdAt),
+            read: n.isRead
+          }));
+          setNotifications(mapped);
         } else if (user) {
-          // Student and Staff use the notification service
           const res = await notificationService.getMyNotifications(1, 10);
           const mapped: Notification[] = res.data.map(n => ({
             id: n.id,
@@ -105,7 +116,11 @@ const Navbar: React.FC = () => {
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     } else if (user) {
       try {
-        await notificationService.markAllRead();
+        if (user.role === "STAFF") {
+          await staffService.markAllNotificationsRead();
+        } else {
+          await notificationService.markAllRead();
+        }
         setNotifications(prev => prev.map(n => ({ ...n, read: true })));
       } catch (err) {
         console.error("Failed to mark all as read:", err);
@@ -231,7 +246,10 @@ const Navbar: React.FC = () => {
 
             {showProfile && (
               <div className="profile-dropdown">
-                <button className="dropdown-item" onClick={() => navigate("/profile")}>
+                <button className="dropdown-item" onClick={() => {
+                  if (user?.role === 'STAFF') navigate('/dashboard/staff/profile');
+                  else navigate('/profile');
+                }}>
                   <Icon name="user" size="sm" /> My Profile
                 </button>
                 <button className="dropdown-item" onClick={() => navigate("/settings")}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import AdminDashboardLayout from '../../components/layout/AdminDashboardLayout';
+import StaffDashboardLayout from '../../components/layout/StaffDashboardLayout';
 import { useAuth } from '../../hooks/useAuth';
 import ProfileHeader from './components/ProfileHeader';
 import ProfileDetails from './components/ProfileDetails';
@@ -17,7 +18,11 @@ const Profile: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { showToast } = useToast();
 
-  const Layout = authUser?.role === 'ADMIN' ? AdminDashboardLayout : DashboardLayout;
+  const Layout = authUser?.role === 'ADMIN' 
+    ? AdminDashboardLayout 
+    : authUser?.role === 'STAFF' 
+      ? StaffDashboardLayout 
+      : DashboardLayout;
 
   const fetchProfile = async () => {
     try {

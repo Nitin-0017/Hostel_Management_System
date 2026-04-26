@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import Icon from "../dashboard/Icon";
 import type { IconName } from "../dashboard/Icon";
+import staffService from "../../services/staffService";
 import "./AdminSidebar.css";
 import "./Sidebar.css";
 
@@ -19,36 +20,84 @@ interface SidebarGroup {
   items: SidebarItem[];
 }
 
-const staffNavGroups: SidebarGroup[] = [
-  {
-    groupLabel: "Overview",
-    items: [
-      { id: "dashboard", label: "Dashboard", iconName: "dashboard", path: "/dashboard/staff" },
-    ],
-  },
-  {
-    groupLabel: "Management",
-    items: [
-      { id: "students", label: "Students", iconName: "users", path: "/dashboard/staff/students" },
-      { id: "rooms", label: "Rooms", iconName: "room", path: "/dashboard/staff/rooms" },
-      { id: "cleaning", label: "Cleaning", iconName: "cleaning", path: "/dashboard/staff/cleaning" },
-    ],
-  },
-  {
-    groupLabel: "Requests",
-    items: [
-      { id: "complaints", label: "Complaints", iconName: "complaints", path: "/dashboard/staff/complaints", badge: 4 },
-      { id: "leave", label: "Leave Requests", iconName: "leave", path: "/dashboard/staff/leave", badge: 2 },
-      { id: "announcements", label: "Announcements", iconName: "bell", path: "/dashboard/staff/announcements" },
-    ],
-  },
-];
-
 const StaffSidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [pendingCleaning, setPendingCleaning] = useState(0);
+  const [openComplaints, setOpenComplaints] = useState(0);
+
+  // Fetch live badge counts once on mount
+  useEffect(() => {
+    staffService
+      .getCleaningRequests()
+      .then((reqs) => {
+        setPendingCleaning(
+          reqs.filter((r) => r.status === "PENDING" || r.status === "IN_PROGRESS").length
+        );
+      })
+      .catch(() => {});
+
+    staffService
+      .getComplaints()
+      .then((comps) => {
+        setOpenComplaints(
+          comps.filter((c) => c.status === "OPEN" || c.status === "IN_PROGRESS").length
+        );
+      })
+      .catch(() => {});
+  }, []);
+
+  const navGroups: SidebarGroup[] = [
+    {
+      groupLabel: "Overview",
+      items: [
+        {
+          id: "dashboard",
+          label: "Dashboard",
+          iconName: "dashboard",
+          path: "/dashboard/staff",
+        },
+      ],
+    },
+    {
+      groupLabel: "Work",
+      items: [
+        {
+          id: "rooms",
+          label: "Assigned Rooms",
+          iconName: "room",
+          path: "/dashboard/staff/rooms",
+        },
+        {
+          id: "cleaning",
+          label: "Cleaning Requests",
+          iconName: "cleaning",
+          path: "/dashboard/staff/cleaning",
+          badge: pendingCleaning > 0 ? pendingCleaning : undefined,
+        },
+        {
+          id: "complaints",
+          label: "Complaints",
+          iconName: "complaints",
+          path: "/dashboard/staff/complaints",
+          badge: openComplaints > 0 ? openComplaints : undefined,
+        },
+      ],
+    },
+    {
+      groupLabel: "Account",
+      items: [
+        {
+          id: "profile",
+          label: "My Profile",
+          iconName: "user",
+          path: "/dashboard/staff/profile",
+        },
+      ],
+    },
+  ];
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -81,9 +130,11 @@ const StaffSidebar: React.FC = () => {
       </div>
 
       <nav className="sidebar-nav">
-        {staffNavGroups.map((group) => (
+        {navGroups.map((group) => (
           <div className="nav-group" key={group.groupLabel}>
-            {!isCollapsed && <span className="nav-group-label">{group.groupLabel}</span>}
+            {!isCollapsed && (
+              <span className="nav-group-label">{group.groupLabel}</span>
+            )}
             <ul className="nav-list">
               {group.items.map((item) => (
                 <li key={item.id}>
