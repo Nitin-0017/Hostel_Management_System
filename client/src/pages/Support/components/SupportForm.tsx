@@ -11,7 +11,7 @@ const SupportForm: React.FC<SupportFormProps> = ({ onSuccess }) => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const { showToast } = useToast();
+  const { addToast: showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

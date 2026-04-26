@@ -4,7 +4,7 @@ import { useToast } from "../../../context/ToastContext";
 const Preferences: React.FC = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
-  const { showToast } = useToast();
+  const { addToast: showToast } = useToast();
 
   // Load from localStorage on mount
   useEffect(() => {
