@@ -102,11 +102,11 @@ class StaffService {
     return [];
   }
 
-  async markComplaintInProgress(id: string): Promise<IStaffComplaint> {
+  async markComplaintInProgress(_id: string): Promise<IStaffComplaint> {
     throw new Error("Complaint management is not configured for staff yet.");
   }
 
-  async resolveComplaint(id: string, note: string): Promise<IStaffComplaint> {
+  async resolveComplaint(_id: string, _note: string): Promise<IStaffComplaint> {
     throw new Error("Complaint management is not configured for staff yet.");
   }
 
