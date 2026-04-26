@@ -36,11 +36,9 @@ export class DatabaseManager {
 
   async connect(): Promise<void> {
     await this._client.$connect();
-    console.log("[DatabaseManager] Connected to MySQL via Prisma.");
   }
 
   async disconnect(): Promise<void> {
     await this._client.$disconnect();
-    console.log("[DatabaseManager] Disconnected.");
   }
 }
