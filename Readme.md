@@ -79,31 +79,31 @@ Managing hostel operations manually is time-consuming and error-prone. Wardens s
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                     CLIENT (Vite + React)                │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────┐  │
-│  │  Pages   │  │ Components│  │  Hooks   │  │Services│  │
-│  │ (by role)│  │ (Shared) │  │(useDash) │  │(Axios) │  │
-│  └────┬─────┘  └──────────┘  └────┬─────┘  └───┬────┘  │
+│                    CLIENT (Vite + React)                │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────┐   │
+│  │  Pages   │  │Components│  │  Hooks   │  │Services│   │
+│  │ (by role)│  │ (Shared) │  │(useDash) │  │(Axios) │   │
+│  └────┬─────┘  └──────────┘  └────┬─────┘  └───┬────┘   │
 │       └────────────────────────────┴────────────┘       │
-│                      Axios API Client                    │
-│              (JWT interceptor, auth redirect)            │
+│                      Axios API Client                   │
+│              (JWT interceptor, auth redirect)           │
 └────────────────────────────┬────────────────────────────┘
                              │ HTTPS / REST
 ┌────────────────────────────▼────────────────────────────┐
-│                  SERVER (Express 5 + TypeScript)         │
-│  ┌──────────┐  ┌───────────┐  ┌──────────┐             │
-│  │  Routes  │→ │Controllers│→ │ Services │             │
-│  │ /api/... │  │(req/res)  │  │(Business │             │
-│  └──────────┘  └───────────┘  │  Logic)  │             │
-│                               └────┬─────┘             │
+│                 SERVER (Express 5 + TypeScript)         │
+│  ┌──────────┐  ┌───────────┐  ┌──────────┐              │
+│  │  Routes  │→ │Controllers│→ │ Services │              │
+│  │ /api/... │  │(req/res)  │  │(Business │              │
+│  └──────────┘  └───────────┘  │  Logic)  │              │
+│                               └────┬─────┘              │
 │  ┌──────────────┐  ┌──────────┐    │                    │
-│  │ authMiddleware│  │Validators│    │                    │
+│  │authMiddleware│  │Validators│    │                    │
 │  │ (JWT + Role) │  │  (Zod)   │    │                    │
 │  └──────────────┘  └──────────┘    │                    │
 └────────────────────────────────────┼────────────────────┘
                                      │ Prisma ORM
 ┌────────────────────────────────────▼────────────────────┐
-│                     MySQL Database                       │
+│                     MySQL Database                      │
 │  users · students · staff · admins · rooms              │
 │  room_allocations · fee_records · complaints            │
 │  leave_requests · cleaning_requests · notifications     │
@@ -692,8 +692,8 @@ Admin ──► POST /admin/rooms/allocate
 | Name | Enrollment No. | GitHub |
 |------|---------------|--------|
 | Nitin Kumar | 2401010305 | [@Nitin-0017](https://github.com/Nitin-0017) |
-| Manjeet | 2401010262 | — |
-| Prachee Dhar | 2401010330 | — |
+| Manjeet | 2401010262 | [@manjeet090223](https://github.com/manjeet090223) |
+| Prachee Dhar | 2401010330 | [@pracheedhar](https://github.com/pracheedhar) |
 | Mayank Yadav | 2401010271 | [@mayankthukran](https://github.com/mayankthukran) |
 | Arun Jangir | 2401010098 | [@Arunjangir8](https://github.com/Arunjangir8) |
 
