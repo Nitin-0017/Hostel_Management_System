@@ -1,4 +1,4 @@
-<h1 align="center">🏨 HostelHub — Smart Hostel Management System</h1>
+<h1 align="center">HostelHub — Smart Hostel Management System</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white&style=flat-square" />
@@ -16,7 +16,7 @@
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
 1. [Problem Statement](#-problem-statement)
 2. [Live Demo](#-live-demo)
@@ -35,7 +35,7 @@
 
 ---
 
-## 🎯 Problem Statement
+## Problem Statement
 
 Managing hostel operations manually is time-consuming and error-prone. Wardens struggle with room allocation, complaint tracking, and maintaining student records. Small hostels lack a unified digital platform.
 
@@ -49,7 +49,7 @@ Managing hostel operations manually is time-consuming and error-prone. Wardens s
 
 ---
 
-## 🌐 Live Demo
+## Live Demo
 
 | Service  | URL |
 |----------|-----|
@@ -58,7 +58,7 @@ Managing hostel operations manually is time-consuming and error-prone. Wardens s
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
@@ -75,7 +75,7 @@ Managing hostel operations manually is time-consuming and error-prone. Wardens s
 
 ---
 
-## 🏗 System Architecture
+## System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -113,7 +113,7 @@ Managing hostel operations manually is time-consuming and error-prone. Wardens s
 
 ---
 
-## 📁 Folder Structure
+## Folder Structure
 
 ```
 Hostel_Management_System/
@@ -227,7 +227,7 @@ Hostel_Management_System/
 
 ---
 
-## 🗄 Database Schema (ER Diagram)
+## Database Schema (ER Diagram)
 
 ```mermaid
 erDiagram
@@ -347,7 +347,7 @@ erDiagram
 
 ---
 
-## 🧩 OOP Concepts Applied
+## OOP Concepts Applied
 
 ### 1. Encapsulation
 
@@ -419,7 +419,7 @@ The `ServiceRegistry` further abstracts the wiring of all service singletons, so
 
 ---
 
-## 🎨 Design Patterns
+## Design Patterns
 
 ### Singleton Pattern
 
@@ -458,7 +458,7 @@ The `apiClient.ts` on the frontend acts as a Facade over Axios — it centralize
 
 ---
 
-## ✅ SOLID Principles
+## SOLID Principles
 
 | Principle | Implementation |
 |-----------|---------------|
@@ -470,7 +470,7 @@ The `apiClient.ts` on the frontend acts as a Facade over Axios — it centralize
 
 ---
 
-## 📡 API Reference
+## API Reference
 
 All endpoints are prefixed with `/api`.
 
@@ -483,7 +483,7 @@ All endpoints are prefixed with `/api`.
 | POST | `/users/staff/login` | Public | Staff login → JWT |
 | POST | `/users/admin/login` | Public | Admin login → JWT |
 
-### Student (`/api/student`) — 🔒 STUDENT role
+### Student (`/api/student`) — STUDENT role
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/student/profile` | Get own profile |
@@ -502,7 +502,7 @@ All endpoints are prefixed with `/api`.
 | PATCH | `/student/notifications/:id/read` | Mark notification read |
 | PATCH | `/student/notifications/read-all` | Mark all read |
 
-### Admin (`/api/admin`) — 🔒 ADMIN role
+### Admin (`/api/admin`) — ADMIN role
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/admin/students` | List all students (paginated) |
@@ -523,7 +523,7 @@ All endpoints are prefixed with `/api`.
 | GET | `/admin/reports` | Generate & fetch reports |
 | GET | `/admin/staff` | List all staff |
 
-### Staff (`/api/staff`) — 🔒 STAFF role
+### Staff (`/api/staff`) — STAFF role
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/staff/rooms` | View assigned rooms |
@@ -533,9 +533,9 @@ All endpoints are prefixed with `/api`.
 
 ---
 
-## 👥 Features by Role
+## Features by Role
 
-### 🎓 Student Portal
+###  Student Portal
 - View dashboard with room occupancy, pending complaints, leave & cleaning stats
 - Room details with roommates, amenities, and cleaning history
 - Submit & track complaints (6 categories)
@@ -545,13 +545,13 @@ All endpoints are prefixed with `/api`.
 - Receive real-time notifications
 - Edit profile & settings
 
-### 🔧 Staff Portal
+### Staff Portal
 - View rooms assigned for maintenance
 - Accept & update cleaning task status (Pending → In Progress → Completed)
 - View & manage complaints routed to their area
 - View own profile
 
-### 🛡 Admin Portal
+### Admin Portal
 - Full student & staff management dashboard
 - Room creation, editing, allocation, and deallocation (supports Student & Staff allocation)
 - Complaint resolution with notes and status tracking
@@ -563,7 +563,7 @@ All endpoints are prefixed with `/api`.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -625,7 +625,7 @@ cd server && npm run build && npm start
 
 ---
 
-## 🔐 Environment Variables
+## Environment Variables
 
 Create `server/.env`:
 
@@ -653,7 +653,7 @@ VITE_API_URL="http://localhost:3000/api"
 
 ---
 
-## 📐 UML Diagrams
+## UML Diagrams
 
 The following diagrams are included in the repository root:
 
@@ -687,7 +687,7 @@ Admin ──► POST /admin/rooms/allocate
 
 ---
 
-## 👨‍💻 Team
+## Team
 
 | Name | Enrollment No. | GitHub |
 |------|---------------|--------|
@@ -699,7 +699,7 @@ Admin ──► POST /admin/rooms/allocate
 
 ---
 
-## 📄 License
+## License
 
 This project is developed for academic purposes as part of the **System Design & Software Engineering (SDSE)** course.
 
